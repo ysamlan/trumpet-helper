@@ -202,15 +202,21 @@ function getVerticalPositionInfo(yCoord) {
  */
 function getNoteFromPosition(snappedY) {
     const halfSpacing = LINE_SPACING / 2;
-    const step = Math.round(snappedY / halfSpacing); // Calculate step relative to E5 (step 0)
+    const stepCalculation = snappedY / halfSpacing;
+    const step = Math.round(stepCalculation); // Calculate step relative to E5 (step 0)
+    console.log(`[getNoteFromPosition] Input snappedY: ${snappedY}`);
+    console.log(`[getNoteFromPosition] halfSpacing: ${halfSpacing}`);
+    console.log(`[getNoteFromPosition] Raw Step Calc (snappedY / halfSpacing): ${stepCalculation}`);
+    console.log(`[getNoteFromPosition] Rounded Step: ${step}`);
 
     const noteName = STEP_TO_NOTE_MAP[step];
+    console.log(`[getNoteFromPosition] Looked up Note Name: ${noteName || 'Not Found in Map'}`);
 
     if (noteName) {
-        console.log(`Snapped Y: ${snappedY}, Step: ${step} -> Note: ${noteName}`);
+        // console.log(`Snapped Y: ${snappedY}, Step: ${step} -> Note: ${noteName}`); // Original log, now redundant
         return noteName;
     } else {
-        console.warn(`No note defined for snapped Y: ${snappedY}, Step: ${step}`);
+        console.warn(`[getNoteFromPosition] No note defined for Step: ${step} (Snapped Y: ${snappedY})`);
         return null; // Position is outside the defined range
     }
 }
@@ -281,6 +287,7 @@ function handleStaffMouseMove(event, svg) {
 
 
     const { snappedY, ledgerLinesNeeded } = getVerticalPositionInfo(coords.y);
+    console.log(`[MouseMove] Vertical Info: snappedY=${snappedY}, ledgerLinesNeeded=${ledgerLinesNeeded}`); // Log values used for rendering
 
     // Update Cursor
     const cursorIndicator = svg.getElementById("cursor-indicator");
@@ -315,10 +322,12 @@ function handleStaffMouseLeave(event, svg) {
 function handleStaffMouseDown(event, svg) {
     const coords = getSVGCoordinates(svg, event);
     const { snappedY } = getVerticalPositionInfo(coords.y); // Get snapped Y for note calculation
+    console.log(`[MouseDown] Coords: x=${coords.x.toFixed(2)}, y=${coords.y.toFixed(2)}`);
+    console.log(`[MouseDown] Calculated Snapped Y for Note: ${snappedY}`); // Log the snappedY being passed
 
-    const noteName = getNoteFromPosition(snappedY);
+    const noteName = getNoteFromPosition(snappedY); // Call the function
 
-    console.log(`Mouse Down - SVG Coords: x=${coords.x.toFixed(2)}, y=${coords.y.toFixed(2)}, Snapped Y: ${snappedY}, Note: ${noteName || 'Out of range'}`);
+    console.log(`[MouseDown] Final Result: Note Name = ${noteName || 'Out of range'}`); // Log the final result
 
     if (noteName) {
         // Future: Place note visual, trigger sound
