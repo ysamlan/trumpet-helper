@@ -64,5 +64,33 @@ export function getFingering(noteName) {
     return fingeringData[noteName] || null;
 }
 
+/**
+ * Key Signature Data.
+ * Maps key names to the notes affected and the type of accidental.
+ * - `notes`: Array of note letters (A-G) that are sharp or flat in this key.
+ * - `accidental`: '#' for sharp keys, 'b' for flat keys, null for C Major.
+ */
+const keySignatures = Object.freeze({
+    // Sharp Keys (Order: F C G D A E B)
+    "C Major": { notes: [], accidental: null },
+    "G Major": { notes: ["F"], accidental: "#" },
+    "D Major": { notes: ["F", "C"], accidental: "#" },
+    "A Major": { notes: ["F", "C", "G"], accidental: "#" },
+    "E Major": { notes: ["F", "C", "G", "D"], accidental: "#" },
+    "B Major": { notes: ["F", "C", "G", "D", "A"], accidental: "#" },
+    "F# Major": { notes: ["F", "C", "G", "D", "A", "E"], accidental: "#" },
+    "C# Major": { notes: ["F", "C", "G", "D", "A", "E", "B"], accidental: "#" },
+
+    // Flat Keys (Order: B E A D G C F)
+    "F Major": { notes: ["B"], accidental: "b" },
+    "Bb Major": { notes: ["B", "E"], accidental: "b" },
+    "Eb Major": { notes: ["B", "E", "A"], accidental: "b" },
+    "Ab Major": { notes: ["B", "E", "A", "D"], accidental: "b" },
+    "Db Major": { notes: ["B", "E", "A", "D", "G"], accidental: "b" },
+    "Gb Major": { notes: ["B", "E", "A", "D", "G", "C"], accidental: "b" },
+    "Cb Major": { notes: ["B", "E", "A", "D", "G", "C", "F"], accidental: "b" },
+});
+
+
 // Export the raw data too, in case it's needed elsewhere directly
-export { fingeringData };
+export { fingeringData, keySignatures };

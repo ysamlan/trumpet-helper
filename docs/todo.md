@@ -31,7 +31,7 @@
 
 ## Phase 4: Key Signatures & Accidentals
 
-* [ ] **4.1:** Update `data.js` to define and export `keySignatures` object mapping key names to `{ notes: [], accidental: '#'/'b' }` structure. Populate for major keys.
+* [X] **4.1:** Update `data.js` to define and export `keySignatures` object mapping key names to `{ notes: [], accidental: '#'/'b' }` structure. Populate for major keys.
 * [ ] **4.2:** Add `currentKeySignature` state management to `app.js` (getter/setter functions).
 * [ ] **4.2:** Modify `getNoteFromPosition` in `staff.js` to return base note info `{ baseNote, octave, noteName }`.
 * [ ] **4.2:** Modify `staff.js` `mousedown` handler to use `currentKeySignature` state and `keySignatures` data to calculate the final `noteName` based on key rules.
