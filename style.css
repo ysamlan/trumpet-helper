@@ -150,3 +150,32 @@ footer {
 #controls-area::before { content: 'Controls Area'; }
 #trumpet-area::before { content: ''; } /* Remove placeholder */
 #fingering-options-area::before { content: 'Fingering Options Area'; }
+
+/* --- Trumpet SVG Valve Styling --- */
+/* Default valve cap fill is set in the SVG, but we can override */
+
+/* Highlight colors for pressed valves */
+.valve-pressed-1 {
+    fill: #FF6347; /* Tomato Red */
+}
+.valve-pressed-2 {
+    fill: #90EE90; /* Light Green */
+}
+.valve-pressed-3 {
+    fill: #ADD8E6; /* Light Blue */
+}
+
+/* Styling for the valve number text */
+.valve-number {
+    font-family: sans-serif;
+    font-size: 14px; /* Match JS constant if changed */
+    font-weight: bold;
+    fill: #000000; /* Match JS constant if changed */
+    text-anchor: middle; /* Center horizontally */
+    dominant-baseline: middle; /* Center vertically */
+    pointer-events: none; /* Prevent text from interfering with mouse events */
+    user-select: none; /* Prevent text selection */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}

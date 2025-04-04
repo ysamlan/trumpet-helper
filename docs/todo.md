@@ -17,8 +17,8 @@
 * [X] **2.2:** Create `trumpet.js` with `renderTrumpetSVG` function to draw static trumpet SVG (side view, bell right, valves up) in `#trumpet-area`. Assign IDs (`#valve-cap-1`, etc.) to valve caps. Call from `app.js`.
 * [X] **2.3:** Add exported `getFingering(noteName)` function to `data.js` to look up notes in `fingeringData` and return the fingering object or `null`.
 * [X] **2.4:** Add exported `updateTrumpetSVG(fingeringArray)` function to `trumpet.js` to lower/raise valve caps (`#valve-cap-X`) using `transform: translateY` based on the input array or null.
-* [ ] **2.5:** Enhance `updateTrumpetSVG` to add/remove valve-specific CSS highlight classes (`.valve-pressed-X`) and add/remove SVG `<text>` elements (`.valve-number`) displaying "1", "2", or "3" on pressed valve caps.
-* [ ] **2.5:** Add CSS rules for `.valve-pressed-X` highlight colors and `.valve-number` text styling in `style.css`.
+* [X] **2.5:** Enhance `updateTrumpetSVG` to add/remove valve-specific CSS highlight classes (`.valve-pressed-X`) and add/remove SVG `<text>` elements (`.valve-number`) displaying "1", "2", or "3" on pressed valve caps.
+* [X] **2.5:** Add CSS rules for `.valve-pressed-X` highlight colors and `.valve-number` text styling in `style.css`.
 * [ ] **2.6:** Modify `staff.js` `mousedown` handler: Import necessary functions, call `getFingering`, and call `updateTrumpetSVG` with the primary fingering (or null).
 
 ## Phase 3: Audio Integration

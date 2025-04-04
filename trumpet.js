@@ -7,10 +7,12 @@ const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
 // --- Styling Constants (can be used later for updates) ---
 const VALVE_CAP_COLOR_UP = "#A66300"; // Default color from SVG
-const VALVE_CAP_COLOR_DOWN_1 = "#FF6347"; // Example: Tomato Red for valve 1
-const VALVE_CAP_COLOR_DOWN_2 = "#90EE90"; // Example: Light Green for valve 2
-const VALVE_CAP_COLOR_DOWN_3 = "#ADD8E6"; // Example: Light Blue for valve 3
+const VALVE_CAP_COLOR_DOWN_1 = "#FF6347"; // Tomato Red for valve 1
+const VALVE_CAP_COLOR_DOWN_2 = "#90EE90"; // Light Green for valve 2
+const VALVE_CAP_COLOR_DOWN_3 = "#ADD8E6"; // Light Blue for valve 3
 const VALVE_DOWN_TRANSFORM = "translateY(15)"; // How much to move caps down visually
+const VALVE_NUMBER_TEXT_COLOR = "#000000"; // Black for valve numbers
+const VALVE_NUMBER_FONT_SIZE = "14px"; // Font size for valve numbers
 
 /**
  * Fetches and injects the trumpet SVG from an external file, assigning IDs to valve caps.
@@ -106,15 +108,51 @@ export function updateTrumpetSVG(fingeringArray) {
         }
 
         if (pressedValves.has(i)) {
-            // Apply transform to lower the valve cap
+            // --- Valve Pressed ---
+            // Apply transform
             valveCap.setAttribute("transform", VALVE_DOWN_TRANSFORM);
-            // Future: Apply color/highlight class (Task 2.5)
+            // Add highlight class
+            valveCap.classList.add(`valve-pressed-${i}`);
             console.log(`Valve ${i} pressed.`);
+
+            // Add valve number text if it doesn't exist
+            const textId = `valve-number-${i}`;
+            if (!svg.getElementById(textId)) {
+                const textElement = document.createElementNS(SVG_NAMESPACE, "text");
+                textElement.id = textId;
+                textElement.classList.add('valve-number'); // For general styling
+
+                // Get cap's bounding box to position text (relative to transformed cap)
+                const capBBox = valveCap.getBBox();
+                const textX = capBBox.x + capBBox.width / 2;
+                // Adjust Y slightly to center within the cap visually
+                const textY = capBBox.y + capBBox.height / 2 + 5; // Adjust +5 based on font size/baseline
+
+                textElement.setAttribute("x", textX);
+                textElement.setAttribute("y", textY);
+                // Apply the same transform as the cap so it moves with it
+                textElement.setAttribute("transform", VALVE_DOWN_TRANSFORM);
+                textElement.textContent = i.toString();
+
+                // Append text to the SVG (or a specific group if preferred)
+                // Appending to the main SVG ensures it's on top
+                svg.appendChild(textElement);
+            }
+
         } else {
-            // Remove transform to raise the valve cap back to default
+            // --- Valve Released ---
+            // Remove transform
             valveCap.removeAttribute("transform");
-            // Future: Remove color/highlight class (Task 2.5)
+            // Remove highlight class
+            valveCap.classList.remove(`valve-pressed-${i}`);
             console.log(`Valve ${i} released.`);
+
+            // Remove valve number text if it exists
+            const textId = `valve-number-${i}`;
+            const textElement = svg.getElementById(textId);
+            if (textElement) {
+                textElement.remove();
+            }
         }
     }
 }
