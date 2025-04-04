@@ -23,11 +23,11 @@
 
 ## Phase 3: Audio Integration
 
-* [X] **3.1:** Add Tone.js CDN script tag to `index.html`.
-* [X] **3.2:** Create `audio.js` with `initAudio` async function to create/load `Tone.Sampler` with trumpet samples (using `unpkg` URLs) and `getSampler` function. Call `initAudio` from `app.js` and handle loading state/feedback.
+* [X] **3.1:** Add Tone.js CDN script tag to `index.html`. (Note: Now replaced with local scripts)
+* [X] **3.2:** Create `audio.js` with `initAudio` async function to create/load `Tone.Sampler` with trumpet samples (using `unpkg` URLs) and `getSampler` function. Call `initAudio` from `app.js` and handle loading state/feedback. (Note: Now uses local SampleLibrary)
 * [X] **3.3:** Modify `staff.js` `mousedown` handler to get sampler and call `sampler.triggerAttack(noteName)`. Ensure `Tone.start()` is called on user gesture if needed.
 * [X] **3.3:** Add global `mouseup` listener (e.g., on `window`) to get sampler and call `sampler.triggerRelease()`.
-* [ ] **3.4:** Confirm `mousedown` logic attempts `triggerAttack` even if `getFingering` returns null.
+* [X] **3.4:** Confirm `mousedown` logic attempts `triggerAttack` even if `getFingering` returns null.
 
 ## Phase 4: Key Signatures & Accidentals
 

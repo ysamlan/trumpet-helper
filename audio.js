@@ -12,88 +12,128 @@ if (typeof Tone === 'undefined') {
 let trumpetSampler = null;
 let isAudioLoading = false;
 let audioLoadError = null;
+let loadedSamples = null; // To store the object returned by SampleLibrary
 
-// URLs for the trumpet samples from tonejs-instruments on unpkg CDN
-const trumpetSamples = {
-    "A3": "A3.mp3",
-    "A#4": "As4.mp3", // Note: Tone.js uses 's' for sharp in sample names
-    "C4": "C4.mp3",
-    "C5": "C5.mp3",
-    "D#4": "Ds4.mp3",
-    "F3": "F3.mp3",
-    "F#4": "Fs4.mp3", // Note: F#4 sample seems missing, using Fs4 as placeholder
-    "G#3": "Gs3.mp3",
-};
-
-// Base URL for the samples
-const SAMPLES_BASE_URL = "https://unpkg.com/tonejs-instruments@4.9.0/samples/trumpet/";
+// Base URL for the local samples directory
+const LOCAL_SAMPLES_BASE_URL = "tonejs-instruments/samples/";
 
 /**
- * Initializes the Tone.js Sampler for trumpet sounds.
+ * Initializes the audio sampler using the local Tonejs-Instruments library.
  * Returns a promise that resolves with the sampler instance when loaded,
- * or rejects if there's an error or Tone.js is unavailable.
- * @returns {Promise<Tone.Sampler>}
+ * or rejects if there's an error or Tone.js/SampleLibrary is unavailable.
+ * @returns {Promise<Tone.Sampler>} A promise resolving with the trumpet sampler instance.
  */
 export function initAudio() {
     return new Promise((resolve, reject) => {
+        // Check dependencies
         if (typeof Tone === 'undefined') {
             audioLoadError = "Tone.js not available.";
             console.error(audioLoadError);
             return reject(new Error(audioLoadError));
         }
+        if (typeof SampleLibrary === 'undefined') {
+            audioLoadError = "SampleLibrary (Tonejs-Instruments.js) not available.";
+            console.error(audioLoadError);
+            return reject(new Error(audioLoadError));
+        }
 
+        // Check initialization state
         if (trumpetSampler) {
-            console.log("Audio already initialized.");
-            return resolve(trumpetSampler); // Already initialized
+            console.log("Audio sampler already initialized.");
+            return resolve(trumpetSampler);
         }
         if (isAudioLoading) {
             console.warn("Audio initialization already in progress.");
-            // Could potentially return a promise that resolves when the ongoing load finishes
-            // For now, let's just reject to avoid complexity
             return reject(new Error("Initialization in progress."));
         }
 
         isAudioLoading = true;
         audioLoadError = null;
-        console.log("Initializing audio sampler...");
+        console.log("Initializing audio sampler via SampleLibrary...");
 
+        // Use SampleLibrary to load only the trumpet
         try {
-            trumpetSampler = new Tone.Sampler({
-                urls: trumpetSamples,
-                baseUrl: SAMPLES_BASE_URL,
-                onload: () => {
-                    console.log("Trumpet samples loaded successfully.");
-                    isAudioLoading = false;
-                    resolve(trumpetSampler);
-                },
-                onerror: (error) => {
-                    console.error("Error loading trumpet samples:", error);
-                    audioLoadError = error;
-                    isAudioLoading = false;
-                    trumpetSampler = null; // Ensure sampler is null on error
-                    reject(error);
-                }
-            }).toDestination(); // Connect the sampler to the main output
+            loadedSamples = SampleLibrary.load({
+                instruments: ['trumpet'],
+                baseUrl: LOCAL_SAMPLES_BASE_URL,
+                // Note: SampleLibrary doesn't have direct onload/onerror callbacks in the options.
+                // We rely on Tone.Buffer.on('load') and Tone.Buffer.on('error') instead.
+            });
 
-            // Optional: Add volume control or effects here
-            // trumpetSampler.volume.value = -6; // Example: Lower volume slightly
+            // --- Setup Load/Error Handlers using Tone.Buffer events ---
+            let loadHandler, errorHandler; // To store handler references for removal
+
+            loadHandler = () => {
+                console.log("Tone.Buffer finished loading.");
+                if (loadedSamples && loadedSamples.trumpet) {
+                    trumpetSampler = loadedSamples.trumpet;
+                    trumpetSampler.release = 0.5; // Set a default release time
+                    trumpetSampler.toDestination(); // Connect to output
+                    console.log("Trumpet sampler configured successfully.");
+                    isAudioLoading = false;
+                    // Clean up listeners
+                    Tone.Buffer.off('load', loadHandler);
+                    Tone.Buffer.off('error', errorHandler);
+                    resolve(trumpetSampler);
+                } else {
+                    // This case might happen if loading finished but the trumpet object wasn't created
+                    const errorMsg = "SampleLibrary load completed, but trumpet sampler is missing.";
+                    console.error(errorMsg);
+                    audioLoadError = new Error(errorMsg);
+                    isAudioLoading = false;
+                    trumpetSampler = null;
+                    loadedSamples = null;
+                    // Clean up listeners
+                    Tone.Buffer.off('load', loadHandler);
+                    Tone.Buffer.off('error', errorHandler);
+                    reject(audioLoadError);
+                }
+            };
+
+            errorHandler = (error) => {
+                console.error("Tone.Buffer error during loading:", error);
+                audioLoadError = error;
+                isAudioLoading = false;
+                trumpetSampler = null;
+                loadedSamples = null;
+                 // Clean up listeners
+                Tone.Buffer.off('load', loadHandler);
+                Tone.Buffer.off('error', errorHandler);
+                reject(error);
+            };
+
+            // Attach the handlers
+            Tone.Buffer.on('load', loadHandler);
+            Tone.Buffer.on('error', errorHandler);
+
+            // Check if Tone.js might have already loaded everything synchronously
+            // (less likely with multiple samples, but good practice)
+            if (Tone.Buffer.loaded) {
+                console.log("Tone.Buffer already loaded, triggering handler manually.");
+                // Timeout to ensure promise setup completes before handler runs
+                setTimeout(loadHandler, 0);
+            } else {
+                 console.log("Waiting for Tone.Buffer 'load' event...");
+            }
 
         } catch (error) {
-            console.error("Failed to create Tone.Sampler:", error);
+            console.error("Failed to initiate SampleLibrary.load:", error);
             audioLoadError = error;
             isAudioLoading = false;
             trumpetSampler = null;
+            loadedSamples = null;
             reject(error);
         }
     });
 }
 
 /**
- * Returns the initialized trumpet sampler instance.
+ * Returns the initialized trumpet sampler instance obtained via SampleLibrary.
  * Returns null if the sampler is not yet loaded or failed to load.
  * @returns {Tone.Sampler | null}
  */
 export function getSampler() {
+    // trumpetSampler is now populated by the load handler
     if (isAudioLoading) {
         console.warn("Audio sampler is still loading.");
         return null;
