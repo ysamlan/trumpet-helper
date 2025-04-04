@@ -20,6 +20,7 @@ const NOTE_HEAD_RY = LINE_SPACING / 2.8; // Vertical radius for ellipse note hea
 // --- Imports for Interaction ---
 import { getFingering } from './data.js';
 import { updateTrumpetSVG } from './trumpet.js';
+import { getSampler, ensureAudioContextStarted } from './audio.js';
 
 /**
  * Creates and appends an SVG element to the container.
@@ -372,18 +373,44 @@ function handleStaffMouseDown(event, svg) {
     console.log(`[MouseDown] Calling updateTrumpetSVG with:`, primaryFingering);
     updateTrumpetSVG(primaryFingering); // Update trumpet visual
 
-    if (noteName) {
-        // Future: Trigger sound
+    // --- Trigger Audio ---
+    // Ensure audio context is started (required on user gesture)
+    ensureAudioContextStarted(); // No need to await, let it run in background
+
+    const sampler = getSampler();
+    if (noteName && sampler) {
+        console.log(`[MouseDown] Triggering audio attack for: ${noteName}`);
+        try {
+            sampler.triggerAttack(noteName);
+        } catch (error) {
+            console.error(`Error triggering attack for note ${noteName}:`, error);
+        }
         // Future: Display alternate fingerings (Phase 5)
-    } else {
+    } else if (!sampler) {
+        console.warn("[MouseDown] Sampler not ready, cannot play audio.");
+    } else { // noteName is null
         // Future: Clear alternate fingerings display (Phase 5)
     }
 }
 
 function handleStaffMouseUp(event, svg) {
-    const coords = getSVGCoordinates(svg, event);
-    console.log(`Mouse Up - SVG Coords: x=${coords.x.toFixed(2)}, y=${coords.y.toFixed(2)}`);
-    // Future: Stop sound
+    // We don't necessarily need coordinates for mouseup action itself
+    // const coords = getSVGCoordinates(svg, event);
+    console.log(`Mouse Up detected (global listener).`);
+
+    // --- Stop Audio ---
+    const sampler = getSampler();
+    if (sampler) {
+        console.log("[MouseUp] Triggering audio release.");
+        try {
+            // Release all currently playing notes on this sampler
+            sampler.triggerRelease();
+        } catch (error) {
+            console.error("Error triggering release:", error);
+        }
+    } else {
+        // Sampler might not be ready yet, or failed to load. Log is handled in getSampler.
+    }
 }
 
 
