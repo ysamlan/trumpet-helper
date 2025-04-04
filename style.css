@@ -1,0 +1,147 @@
+/* Basic Reset & Body Styling */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    font-family: sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top */
+    padding: 1rem;
+    background-color: #f0f0f0; /* Light gray background */
+}
+
+#app-container {
+    width: 100%;
+    max-width: 1200px; /* Max width for the app */
+    background-color: #ffffff; /* White background for the app */
+    border: 1px solid #cccccc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column; /* Header on top */
+}
+
+header {
+    padding: 1rem;
+    border-bottom: 1px solid #cccccc;
+    background-color: #e9ecef; /* Light header background */
+    text-align: center;
+}
+
+main {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping for responsiveness */
+    flex-grow: 1; /* Allow main to fill available space */
+    padding: 1rem;
+    gap: 1rem; /* Space between sections */
+}
+
+/* Layout Sections */
+#staff-area, #controls-area, #trumpet-area, #fingering-options-area {
+    border: 1px dashed #999999; /* Dashed border for placeholders */
+    padding: 1rem;
+    min-height: 150px; /* Minimum height for visibility */
+    display: flex; /* Use flex for content alignment later */
+    justify-content: center;
+    align-items: center;
+    font-style: italic;
+    color: #666666;
+}
+
+/* Responsive Layout: Side-by-side on wider screens */
+@media (min-width: 768px) {
+    main {
+        flex-wrap: nowrap; /* Prevent wrapping */
+    }
+
+    /* Create two main columns */
+    .left-panel, .right-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Space between sections in a column */
+        flex: 1; /* Each panel takes half the width */
+    }
+
+    #staff-area { order: 1; min-height: 300px; }
+    #controls-area { order: 2; min-height: 100px; }
+    #trumpet-area { order: 3; min-height: 300px; }
+    #fingering-options-area { order: 4; min-height: 100px; }
+
+    /* Assign sections to panels */
+    #staff-area, #controls-area { flex-basis: 100%; } /* Full width within their panel */
+    #trumpet-area, #fingering-options-area { flex-basis: 100%; }
+
+    /* Wrap sections into panels dynamically (no extra HTML needed) */
+    #staff-area, #controls-area {
+        /* Belongs to left panel conceptually */
+    }
+     #trumpet-area, #fingering-options-area {
+        /* Belongs to right panel conceptually */
+    }
+     /* We need to re-arrange the main flex container */
+     main {
+         /* Revert to default row direction */
+         flex-direction: row;
+     }
+     /* Create conceptual panels using flex properties */
+     #staff-area { flex-basis: 50%; order: 1; }
+     #controls-area { flex-basis: 50%; order: 3; align-self: flex-start; /* Align controls below staff */}
+     #trumpet-area { flex-basis: 50%; order: 2; }
+     #fingering-options-area { flex-basis: 50%; order: 4; align-self: flex-start; /* Align options below trumpet */}
+
+     /* Adjust layout slightly for better visual grouping */
+     main {
+         gap: 2rem; /* Increase gap between the two main columns */
+     }
+     /* Force column layout within the conceptual panels */
+     /* This requires wrapping divs or adjusting flex properties carefully */
+     /* Let's try a simpler 2-column grid approach for main */
+     main {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Two equal columns */
+        grid-template-rows: auto auto; /* Rows adjust height */
+        gap: 1rem;
+     }
+     #staff-area { grid-column: 1; grid-row: 1; }
+     #controls-area { grid-column: 1; grid-row: 2; }
+     #trumpet-area { grid-column: 2; grid-row: 1; }
+     #fingering-options-area { grid-column: 2; grid-row: 2; }
+
+}
+
+/* Narrow screens: Stacked layout (default flex-wrap handles this) */
+@media (max-width: 767px) {
+    main {
+        flex-direction: column; /* Stack vertically */
+    }
+    #staff-area, #controls-area, #trumpet-area, #fingering-options-area {
+        width: 100%; /* Take full width */
+    }
+     #staff-area { order: 1; }
+     #controls-area { order: 2; }
+     #trumpet-area { order: 3; }
+     #fingering-options-area { order: 4; }
+}
+
+
+footer {
+    padding: 0.5rem;
+    border-top: 1px solid #cccccc;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #666666;
+    background-color: #f8f9fa;
+}
+
+/* Add placeholder text */
+#staff-area::before { content: 'Staff Area'; }
+#controls-area::before { content: 'Controls Area'; }
+#trumpet-area::before { content: 'Trumpet Area'; }
+#fingering-options-area::before { content: 'Fingering Options Area'; }
