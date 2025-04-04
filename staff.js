@@ -160,7 +160,7 @@ function getVerticalPositionInfo(yCoord) {
  */
 function updateLedgerLines(svg, group, ledgerLinesNeeded, snappedY, cursorX) {
     group.innerHTML = ''; // Clear existing lines
-    const halfSpacing = LINE_SPACING / 2; // Define halfSpacing here
+    // const halfSpacing = LINE_SPACING / 2; // No longer needed for drawing condition
 
     const ledgerLineLength = CURSOR_RADIUS * 2 + LEDGER_LINE_EXTENSION * 2;
     const x1 = cursorX - ledgerLineLength / 2;
@@ -168,52 +168,36 @@ function updateLedgerLines(svg, group, ledgerLinesNeeded, snappedY, cursorX) {
 
     if (ledgerLinesNeeded < 0) { // Lines above staff
         const numLines = Math.abs(ledgerLinesNeeded);
-        console.log(`Drawing ${numLines} ledger lines ABOVE staff (snappedY: ${snappedY}).`); // Log how many lines to attempt
+        // console.log(`Drawing ${numLines} ledger lines ABOVE staff (snappedY: ${snappedY}).`); // Keep for debugging if needed
+        // Iterate from the first ledger line above (Y = -LINE_SPACING) up to the required number.
         for (let i = 1; i <= numLines; i++) {
-            // Calculate Y position for each ledger line above the staff
-            // Lines are needed at Y = -12 (G5), -24 (A5), -36 (C6), -48 (E6)
             const lineY = -i * LINE_SPACING;
-             // Only draw the line if the cursor is *on* or *through* it
-             // If cursor is on C6 space (snappedY=-30), need A5 line (-24)
-             // If cursor is on C6 line (snappedY=-36), need A5 line (-24) and C6 line (-36)
-             // Draw line if lineY >= snappedY (e.g., line at -24, cursor at -30 (B5 space) -> draw; cursor at -24 (B5 line) -> draw)
-             const drawCondition = lineY >= snappedY - halfSpacing;
-             console.log(`  Line ${i} (Y=${lineY}): Draw? ${drawCondition} (lineY >= snappedY - halfSpacing -> ${lineY} >= ${snappedY} - ${halfSpacing})`);
-            if (drawCondition) { // Draw if cursor is at or below this line's position
-                const line = document.createElementNS(SVG_NAMESPACE, "line");
-                line.setAttribute("x1", x1);
-                line.setAttribute("y1", lineY);
-                line.setAttribute("x2", x2);
-                line.setAttribute("y2", lineY);
-                line.setAttribute("stroke", STROKE_COLOR);
-                line.setAttribute("stroke-width", STROKE_WIDTH);
-                group.appendChild(line);
-            }
+            // Draw the line regardless of snappedY; the number is determined by ledgerLinesNeeded
+            const line = document.createElementNS(SVG_NAMESPACE, "line");
+            line.setAttribute("x1", x1);
+            line.setAttribute("y1", lineY);
+            line.setAttribute("x2", x2);
+            line.setAttribute("y2", lineY);
+            line.setAttribute("stroke", STROKE_COLOR);
+            line.setAttribute("stroke-width", STROKE_WIDTH); // Use constant
+            group.appendChild(line);
         }
     } else if (ledgerLinesNeeded > 0) { // Lines below staff
         const numLines = ledgerLinesNeeded;
-        const bottomStaffLineY = STAFF_HEIGHT;
-        console.log(`Drawing ${numLines} ledger lines BELOW staff (snappedY: ${snappedY}).`); // Log how many lines to attempt
+        // console.log(`Drawing ${numLines} ledger lines BELOW staff (snappedY: ${snappedY}).`); // Keep for debugging if needed
+        const bottomStaffLineY = (STAFF_LINES - 1) * LINE_SPACING; // Y position of the lowest staff line (F4)
+        // Iterate from the first ledger line below (Y = bottomStaffLineY + LINE_SPACING) down to the required number.
         for (let i = 1; i <= numLines; i++) {
-            // Calculate Y position for each ledger line below the staff
-            // Lines are needed at Y = 60 (D4), 72 (B3), 84 (G3), 96 (E3)
             const lineY = bottomStaffLineY + i * LINE_SPACING;
-            // Only draw the line if the cursor is *on* or *through* it
-            // If cursor is on C4 space (snappedY=66), need D4 line (60)
-            // If cursor is on B3 line (snappedY=72), need D4 line (60) and B3 line (72)
-            // Draw line if lineY <= snappedY (e.g., line at 60, cursor at 66 (C4 space) -> draw; cursor at 72 (B3 line) -> draw)
-            const drawCondition = lineY <= snappedY + halfSpacing;
-             console.log(`  Line ${i} (Y=${lineY}): Draw? ${drawCondition} (lineY <= snappedY + halfSpacing -> ${lineY} <= ${snappedY} + ${halfSpacing})`);
-            if (drawCondition) { // Draw if cursor is at or above this line's position
-                const line = document.createElementNS(SVG_NAMESPACE, "line");
-                line.setAttribute("x1", x1);
-                line.setAttribute("y1", lineY);
-                line.setAttribute("x2", x2);
-                line.setAttribute("y2", lineY);
-                line.setAttribute("stroke", STROKE_COLOR);
-                line.setAttribute("stroke-width", STROKE_WIDTH);
-                group.appendChild(line);
-            }
+            // Draw the line regardless of snappedY; the number is determined by ledgerLinesNeeded
+            const line = document.createElementNS(SVG_NAMESPACE, "line");
+            line.setAttribute("x1", x1);
+            line.setAttribute("y1", lineY);
+            line.setAttribute("x2", x2);
+            line.setAttribute("y2", lineY);
+            line.setAttribute("stroke", STROKE_COLOR);
+            line.setAttribute("stroke-width", STROKE_WIDTH); // Use constant
+            group.appendChild(line);
         }
     }
 }
