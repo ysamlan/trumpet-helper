@@ -10,7 +10,7 @@ const VALVE_CAP_COLOR_UP = "#A66300"; // Default color from SVG
 const VALVE_CAP_COLOR_DOWN_1 = "#FF6347"; // Tomato Red for valve 1
 const VALVE_CAP_COLOR_DOWN_2 = "#90EE90"; // Light Green for valve 2
 const VALVE_CAP_COLOR_DOWN_3 = "#ADD8E6"; // Light Blue for valve 3
-const VALVE_DOWN_TRANSFORM = "translateY(15)"; // How much to move caps down visually
+const VALVE_DOWN_TRANSFORM = "translate(0, 15)"; // SVG transform syntax for moving down
 const VALVE_NUMBER_TEXT_COLOR = "#000000"; // Black for valve numbers
 const VALVE_NUMBER_FONT_SIZE = "14px"; // Font size for valve numbers
 
@@ -131,7 +131,7 @@ export function updateTrumpetSVG(fingeringArray) {
                 textElement.setAttribute("x", textX);
                 textElement.setAttribute("y", textY);
                 // Apply the same transform as the cap so it moves with it
-                textElement.setAttribute("transform", VALVE_DOWN_TRANSFORM);
+                textElement.setAttribute("transform", VALVE_DOWN_TRANSFORM); // Use updated constant
                 textElement.textContent = i.toString();
 
                 // Append text to the SVG (or a specific group if preferred)
