@@ -119,13 +119,14 @@ function getVerticalPositionInfo(yCoord) {
         // Ledger lines start for notes above G5 (Y=-12)
         // A5 space (Y=-18) needs 1 line. B5 line (Y=-24) needs 1 line.
         // C6 space (Y=-30) needs 2 lines. D6 line (Y=-36) needs 2 lines.
-        if (snappedY <= -LINE_SPACING - halfSpacing) { // A5 space or higher
+        // Notes on E5 line (Y=0) down to G5 line (Y=-12) need 0 lines.
+        // Ledger lines start for notes at or above A5 space (Y=-18).
+        if (snappedY <= -LINE_SPACING - halfSpacing) { // A5 space or higher (Y <= -18)
             // Calculate how many lines are needed above the staff.
-            // Formula: ceil( abs(Y_coord / LineSpacing) - 1 )
-            ledgerLinesNeeded = -Math.ceil( Math.abs(snappedY / LINE_SPACING) - 1);
+            // Formula derived by testing thresholds: n = ceil( (abs(snappedY) - halfSpacing) / LINE_SPACING )
+            ledgerLinesNeeded = -Math.ceil( (Math.abs(snappedY) - halfSpacing) / LINE_SPACING );
         }
-        // Notes from F5 space (Y=-6) to G5 line (Y=-12) need 0 lines.
-        // Notes on E5 line (Y=0) need 0 lines.
+        // ledgerLinesNeeded remains 0 if the condition isn't met (i.e., snappedY > -18).
         // ledgerLinesNeeded remains 0 if the condition isn't met.
 
     } else if (snappedY > bottomStaffLineY) { // Notes below staff (F4 line is Y=48)
