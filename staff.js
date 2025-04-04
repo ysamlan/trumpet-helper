@@ -88,6 +88,7 @@ function drawStaffLines(svg, width) {
  */
 function drawTrebleClef(svg) {
     const clef = document.createElementNS(SVG_NAMESPACE, "text");
+    clef.id = "clef-symbol"; // Add an ID for CSS targeting
     clef.setAttribute("x", CLEF_X);
     // Position Y based on the middle line (D5 line, Y=12, Step 2)
     const middleLineY = 2 * (LINE_SPACING / 2); // Calculate Y for Step 2

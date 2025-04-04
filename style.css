@@ -179,3 +179,12 @@ footer {
     -moz-user-select: none;
     -ms-user-select: none;
 }
+
+/* --- Staff Element Styling --- */
+#clef-symbol {
+    /* Try different fonts known to have good music symbols */
+    /* Options: 'Bravura', 'Academico', 'Times New Roman', 'Georgia', serif */
+    /* You might need to install/load Bravura or another music font */
+    font-family: 'Times New Roman', serif; /* Example: Start with a common serif font */
+    /* font-style: normal !important; */ /* Usually not needed if font has upright glyph */
+}
