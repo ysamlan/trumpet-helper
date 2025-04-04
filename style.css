@@ -148,5 +148,5 @@ footer {
 }
 #staff-area::before { content: ''; } /* Remove placeholder */
 #controls-area::before { content: 'Controls Area'; }
-#trumpet-area::before { content: 'Trumpet Area'; }
+#trumpet-area::before { content: ''; } /* Remove placeholder */
 #fingering-options-area::before { content: 'Fingering Options Area'; }

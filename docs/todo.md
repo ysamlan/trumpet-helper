@@ -14,7 +14,7 @@
 ## Phase 2: Fingering Data & Display
 
 * [X] **2.1:** Create `data.js` and define/export `fingeringData` object mapping notes (e.g., "C4") to `{ primary: [], alternates: [[]] }`. Populate with sample data (C4-G4).
-* [ ] **2.2:** Create `trumpet.js` with `renderTrumpetSVG` function to draw static trumpet SVG (side view, bell right, valves up) in `#trumpet-area`. Assign IDs (`#valve-cap-1`, etc.) to valve caps. Call from `app.js`.
+* [X] **2.2:** Create `trumpet.js` with `renderTrumpetSVG` function to draw static trumpet SVG (side view, bell right, valves up) in `#trumpet-area`. Assign IDs (`#valve-cap-1`, etc.) to valve caps. Call from `app.js`.
 * [ ] **2.3:** Add exported `getFingering(noteName)` function to `data.js` to look up notes in `fingeringData` and return the fingering object or `null`.
 * [ ] **2.4:** Add exported `updateTrumpetSVG(fingeringArray)` function to `trumpet.js` to lower/raise valve caps (`#valve-cap-X`) using `transform: translateY` based on the input array or null.
 * [ ] **2.5:** Enhance `updateTrumpetSVG` to add/remove valve-specific CSS highlight classes (`.valve-pressed-X`) and add/remove SVG `<text>` elements (`.valve-number`) displaying "1", "2", or "3" on pressed valve caps.

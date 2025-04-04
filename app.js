@@ -1,5 +1,6 @@
 import { renderStaff } from './staff.js';
-// Future imports will go here (e.g., trumpet, audio, data, controls)
+import { renderTrumpetSVG } from './trumpet.js';
+// Future imports will go here (e.g., audio, data, controls)
 
 /**
  * Initializes the application.
@@ -10,7 +11,7 @@ function initializeApp() {
 
     // Render the initial UI components
     renderStaff('staff-area');
-    // renderTrumpetSVG('trumpet-area'); // Future step
+    renderTrumpetSVG('trumpet-area');
     // initAudio(); // Future step
     // initControls(); // Future step
 
