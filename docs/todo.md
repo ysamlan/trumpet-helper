@@ -2,7 +2,7 @@
 
 ## Phase 1: Basic Structure & Staff Interaction
 
-* [ ] **1.1:** Set up `index.html` with boilerplate and main layout divs (`#app-container`, `#staff-area`, `#controls-area`, `#trumpet-area`, `#fingering-options-area`).
+* [X] **1.1:** Set up `index.html` with boilerplate and main layout divs (`#app-container`, `#staff-area`, `#controls-area`, `#trumpet-area`, `#fingering-options-area`).
 * [ ] **1.2:** Create `style.css`, link it, and add basic CSS for side-by-side layout (using panels if desired) and visual placeholders for the main areas.
 * [ ] **1.3:** Create `staff.js` with `renderStaff` function to draw static 5-line staff and treble clef using SVG in `#staff-area`. Call from `app.js`.
 * [ ] **1.4:** Add `mousemove`, `mousedown`, `mouseup` listeners to the staff SVG in `staff.js` to log coordinates/position info.
