@@ -23,7 +23,8 @@ import { updateTrumpetSVG } from './trumpet.js';
 import { getSampler } from './audio.js'; // Removed ensureAudioContextStarted
 
 // --- Module State ---
-let currentlyPlayingNote = null; // Keep track of the note triggered on mousedown
+let noteUnderMouse = null; // Tracks the note being attacked/held down
+let noteScheduledForRelease = null; // Tracks the note whose release is pending in setTimeout
 let releaseTimeoutId = null; // ID for the delayed release timer
 
 /**
@@ -384,44 +385,43 @@ function handleStaffMouseDown(event, svg) {
 
     // --- Stop previous note & Cancel its pending release before starting a new note ---
     if (releaseTimeoutId) {
-        console.log(`[MouseDown] Found active release timer ID: ${releaseTimeoutId}`);
-        if (currentlyPlayingNote && sampler) {
+        console.log(`[MouseDown] Found active release timer ID: ${releaseTimeoutId} for note ${noteScheduledForRelease}`);
+        if (noteScheduledForRelease && sampler) {
             // Immediately release the note that was scheduled to be released
-            console.log(`[MouseDown] => Calling sampler.triggerRelease(${currentlyPlayingNote}) NOW.`);
+            console.log(`[MouseDown] => Calling sampler.triggerRelease(${noteScheduledForRelease}) NOW.`);
             try {
-                sampler.triggerRelease(currentlyPlayingNote);
+                sampler.triggerRelease(noteScheduledForRelease);
             } catch (error) {
-                 console.error(`[MouseDown] Error immediately releasing note ${currentlyPlayingNote}:`, error);
+                 console.error(`[MouseDown] Error immediately releasing note ${noteScheduledForRelease}:`, error);
             }
         } else {
-            console.log("[MouseDown] => No note or sampler found to release immediately, just clearing timer.");
+            console.log("[MouseDown] => No scheduled note or sampler found to release immediately, just clearing timer.");
         }
         // Now clear the timer associated with it
         clearTimeout(releaseTimeoutId);
         console.log(`[MouseDown] Cleared timeout ID: ${releaseTimeoutId}`);
         releaseTimeoutId = null;
-        currentlyPlayingNote = null; // Clear the note tracker as it's now released (or was never set)
+        noteScheduledForRelease = null; // Clear the scheduled note tracker
     }
 
 
     if (noteName && sampler) {
         console.log(`[MouseDown] Triggering audio attack for: ${noteName}`);
         try {
-            // Stop any *immediately* playing note (redundant if timeout logic works, but safe)
-            // Note: This might cause a brief silence if re-clicking the same note quickly.
-            // Consider removing if the timeout cancellation is sufficient.
-            // sampler.triggerRelease(currentlyPlayingNote); // Optional immediate release
-
+            // Optional: Immediately release any note currently under the mouse if different
+            // if (noteUnderMouse && noteUnderMouse !== noteName) {
+            //     sampler.triggerRelease(noteUnderMouse);
+            // }
             sampler.triggerAttack(noteName);
-            currentlyPlayingNote = noteName; // Store the note being played
+            noteUnderMouse = noteName; // Store the note being played/held
         } catch (error) {
-            console.error(`Error triggering attack/release for note ${noteName}:`, error);
-            currentlyPlayingNote = null; // Clear if error occurs
+            console.error(`Error triggering attack for note ${noteName}:`, error);
+            noteUnderMouse = null; // Clear if error occurs
         }
         // Future: Display alternate fingerings (Phase 5)
     } else {
         // If no note is played (out of range or sampler not ready), clear the tracker
-        currentlyPlayingNote = null;
+        noteUnderMouse = null;
         if (!sampler) {
             console.warn("[MouseDown] Sampler not ready, cannot play audio.");
         }
@@ -439,39 +439,50 @@ function handleStaffMouseUp(event, svg) {
 
     // --- Schedule Delayed Stop Audio ---
     const sampler = getSampler();
-    if (sampler && currentlyPlayingNote) {
-        const noteToRelease = currentlyPlayingNote; // Capture the note to release
+    if (sampler && noteUnderMouse) { // Check if a note was actually being held down
+        const noteToRelease = noteUnderMouse; // Capture the note to release
 
         // Clear any existing timer before setting a new one (safety measure)
         if (releaseTimeoutId) {
-            console.warn(`[MouseUp] Found existing release timer ID ${releaseTimeoutId} before scheduling. Clearing it.`);
+            console.warn(`[MouseUp] Found existing release timer ID ${releaseTimeoutId} for note ${noteScheduledForRelease}. Clearing it.`);
             clearTimeout(releaseTimeoutId);
+            noteScheduledForRelease = null; // Also clear the note associated with the cancelled timer
         }
 
-        console.log(`[MouseUp] Scheduling release for: ${noteToRelease} in 500ms`);
+        noteScheduledForRelease = noteToRelease; // Track the note whose release is now scheduled
+        console.log(`[MouseUp] Scheduling release for: ${noteScheduledForRelease} in 500ms`);
+
         releaseTimeoutId = setTimeout(() => {
-            const currentTimerId = releaseTimeoutId; // Capture ID at execution time
-            console.log(`[Timeout Callback] Executing for timer ID: ${currentTimerId}. Releasing note: ${noteToRelease}`);
-            try {
-                sampler.triggerRelease(noteToRelease);
-                console.log(`[Timeout Callback] Called sampler.triggerRelease(${noteToRelease})`);
-            } catch (error) {
-                console.error(`[Timeout Callback] Error in delayed release for note ${noteToRelease}:`, error);
-            }
-            // Only clear the ID if it matches the one this timeout was created with
-            // Prevents a rapid click sequence from nullifying the wrong timer ID
-            if (releaseTimeoutId === currentTimerId) {
-                releaseTimeoutId = null;
-                console.log(`[Timeout Callback] Cleared releaseTimeoutId.`);
+            const executedTimerId = releaseTimeoutId; // Capture ID at execution time
+            const releasedNote = noteScheduledForRelease; // Capture note at execution time
+
+            console.log(`[Timeout Callback] Executing for timer ID: ${executedTimerId}. Releasing note: ${releasedNote}`);
+            if (releasedNote && sampler) {
+                try {
+                    sampler.triggerRelease(releasedNote);
+                    console.log(`[Timeout Callback] Called sampler.triggerRelease(${releasedNote})`);
+                } catch (error) {
+                    console.error(`[Timeout Callback] Error in delayed release for note ${releasedNote}:`, error);
+                }
             } else {
-                 console.warn(`[Timeout Callback] releaseTimeoutId (${releaseTimeoutId}) does not match this timer's ID (${currentTimerId}). Not clearing.`);
+                 console.warn(`[Timeout Callback] No note (${releasedNote}) or sampler to release.`);
+            }
+
+            // Only clear the ID and scheduled note if it matches the one this timeout was created with
+            // Prevents a rapid click sequence from nullifying the wrong timer ID/note
+            if (releaseTimeoutId === executedTimerId) {
+                releaseTimeoutId = null;
+                noteScheduledForRelease = null;
+                console.log(`[Timeout Callback] Cleared releaseTimeoutId and noteScheduledForRelease.`);
+            } else {
+                 console.warn(`[Timeout Callback] releaseTimeoutId (${releaseTimeoutId}) does not match this timer's ID (${executedTimerId}). Not clearing.`);
             }
         }, 500); // 500ms delay
 
-        console.log(`[MouseUp] Scheduled timer ID: ${releaseTimeoutId}`);
-        currentlyPlayingNote = null; // Clear the *currently playing* tracker immediately
+        console.log(`[MouseUp] Scheduled timer ID: ${releaseTimeoutId} for note ${noteScheduledForRelease}`);
+        noteUnderMouse = null; // Clear the note-under-mouse tracker immediately
 
-    } else if (sampler && !currentlyPlayingNote) {
+    } else if (sampler && !noteUnderMouse) {
         // Mouseup happened, but no note was actively tracked from mousedown
         // Or a release is already scheduled. Do nothing extra.
         // Optional: Could call sampler.triggerRelease() here as a fallback,
