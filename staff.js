@@ -383,12 +383,27 @@ function handleStaffMouseDown(event, svg) {
 
     const sampler = getSampler();
 
-    // --- Cancel any pending release before starting a new note ---
-    if (releaseTimeoutId) {
+    // --- Stop previous note & Cancel its pending release before starting a new note ---
+    if (releaseTimeoutId && currentlyPlayingNote && sampler) {
+        // Immediately release the note that was scheduled to be released
+        console.log(`[MouseDown] Immediately releasing previously scheduled note: ${currentlyPlayingNote}`);
+        try {
+            sampler.triggerRelease(currentlyPlayingNote);
+        } catch (error) {
+             console.error(`Error immediately releasing note ${currentlyPlayingNote}:`, error);
+        }
+        // Now clear the timer associated with it
         clearTimeout(releaseTimeoutId);
         releaseTimeoutId = null;
+        currentlyPlayingNote = null; // Clear the note tracker as it's now released
         console.log("[MouseDown] Cancelled pending release timer.");
+    } else if (releaseTimeoutId) {
+         // If there's a timer but no tracked note (shouldn't happen often), just clear it
+         clearTimeout(releaseTimeoutId);
+         releaseTimeoutId = null;
+         console.log("[MouseDown] Cancelled pending release timer (no note tracked).");
     }
+
 
     if (noteName && sampler) {
         console.log(`[MouseDown] Triggering audio attack for: ${noteName}`);
