@@ -100,6 +100,41 @@ function getSVGCoordinates(svg, event) {
     return { x: svgPoint.x, y: svgPoint.y };
 }
 
+// --- Note Calculation Data (C Major) ---
+
+// Maps vertical steps (half line spacings) relative to E5 (Y=0, step=0)
+// to note names in C Major. Covers range from 4 ledger lines above to 4 below.
+const STEP_TO_NOTE_MAP = Object.freeze({
+  [-9]: "G6", // Y=-54 (Space above 4th ledger)
+  [-8]: "F6", // Y=-48 (4th ledger line above)
+  [-7]: "E6", // Y=-42 (Space above 3rd ledger)
+  [-6]: "D6", // Y=-36 (3rd ledger line above)
+  [-5]: "C6", // Y=-30 (Space above 2nd ledger)
+  [-4]: "B5", // Y=-24 (2nd ledger line above)
+  [-3]: "A5", // Y=-18 (Space above 1st ledger)
+  [-2]: "G5", // Y=-12 (1st ledger line above)
+  [-1]: "F5", // Y=-6  (Space above staff)
+  [0]: "E5",  // Y=0   (Top staff line)
+  [1]: "D5",  // Y=6
+  [2]: "C5",  // Y=12
+  [3]: "B4",  // Y=18
+  [4]: "A4",  // Y=24
+  [5]: "G4",  // Y=30  (Treble clef line)
+  [6]: "F4",  // Y=36
+  [7]: "E4",  // Y=42
+  [8]: "D4",  // Y=48  (Bottom staff line)
+  [9]: "C4",  // Y=54  (Middle C space)
+  [10]: "B3", // Y=60  (1st ledger line below)
+  [11]: "A3", // Y=66  (Space below 1st ledger)
+  [12]: "G3", // Y=72  (2nd ledger line below)
+  [13]: "F3", // Y=78  (Space below 2nd ledger)
+  [14]: "E3", // Y=84  (3rd ledger line below)
+  [15]: "D3", // Y=90  (Space below 3rd ledger)
+  [16]: "C3", // Y=96  (4th ledger line below)
+  [17]: "B2"  // Y=102 (Space below 4th ledger)
+});
+
+
 // --- Helper Functions for Interaction ---
 
 /**
@@ -158,6 +193,28 @@ function getVerticalPositionInfo(yCoord) {
 
     return { snappedY, ledgerLinesNeeded: clampedLedgerLines };
 }
+
+/**
+ * Calculates the note name (pitch and octave) based on the snapped Y position.
+ * Assumes C Major key signature initially.
+ * @param {number} snappedY - The Y coordinate snapped to the nearest line or space.
+ * @returns {string | null} The note name (e.g., "C4", "F#5") or null if position is out of range.
+ */
+function getNoteFromPosition(snappedY) {
+    const halfSpacing = LINE_SPACING / 2;
+    const step = Math.round(snappedY / halfSpacing); // Calculate step relative to E5 (step 0)
+
+    const noteName = STEP_TO_NOTE_MAP[step];
+
+    if (noteName) {
+        console.log(`Snapped Y: ${snappedY}, Step: ${step} -> Note: ${noteName}`);
+        return noteName;
+    } else {
+        console.warn(`No note defined for snapped Y: ${snappedY}, Step: ${step}`);
+        return null; // Position is outside the defined range
+    }
+}
+
 
 /**
  * Updates the visibility and position of ledger lines.
@@ -255,11 +312,17 @@ function handleStaffMouseLeave(event, svg) {
      console.log("Mouse Leave Staff");
 }
 
-
 function handleStaffMouseDown(event, svg) {
     const coords = getSVGCoordinates(svg, event);
-    console.log(`Mouse Down - SVG Coords: x=${coords.x.toFixed(2)}, y=${coords.y.toFixed(2)}`);
-    // Future: Place note, trigger sound
+    const { snappedY } = getVerticalPositionInfo(coords.y); // Get snapped Y for note calculation
+
+    const noteName = getNoteFromPosition(snappedY);
+
+    console.log(`Mouse Down - SVG Coords: x=${coords.x.toFixed(2)}, y=${coords.y.toFixed(2)}, Snapped Y: ${snappedY}, Note: ${noteName || 'Out of range'}`);
+
+    if (noteName) {
+        // Future: Place note visual, trigger sound
+    }
 }
 
 function handleStaffMouseUp(event, svg) {
