@@ -67,7 +67,7 @@ export function initAudio() {
                 console.log("Tone.Buffer finished loading.");
                 if (loadedSamples && loadedSamples.trumpet) {
                     trumpetSampler = loadedSamples.trumpet;
-                    trumpetSampler.release = 0.5; // Set a default release time
+                    trumpetSampler.release = 0.2; // Shorten release time for quicker note stop
                     trumpetSampler.toMaster(); // Connect to output (using .toMaster() based on demo)
                     console.log("Trumpet sampler configured successfully.");
                     isAudioLoading = false;
