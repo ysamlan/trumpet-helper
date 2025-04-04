@@ -6,12 +6,12 @@ import { renderTrumpetSVG } from './trumpet.js';
  * Initializes the application.
  * Waits for the DOM to be fully loaded.
  */
-function initializeApp() {
+async function initializeApp() { // Make async to await SVG rendering
     console.log("Initializing Trumpet Fingering Helper...");
 
     // Render the initial UI components
     renderStaff('staff-area');
-    renderTrumpetSVG('trumpet-area');
+    await renderTrumpetSVG('trumpet-area'); // Wait for SVG to load and render
     // initAudio(); // Future step
     // initControls(); // Future step
 
