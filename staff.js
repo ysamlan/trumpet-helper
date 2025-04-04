@@ -13,6 +13,9 @@ const MAX_LEDGER_LINES = 4;
 const LEDGER_LINE_EXTENSION = 8; // How far ledger line extends past cursor center
 const CURSOR_RADIUS = LINE_SPACING / 2.5; // Radius of the cursor indicator
 const CURSOR_COLOR = "rgba(50, 50, 200, 0.6)"; // Semi-transparent blue
+const PLACED_NOTE_COLOR = "#444444"; // Dark gray for placed note
+const NOTE_HEAD_RX = LINE_SPACING / 2.2; // Horizontal radius for ellipse note head
+const NOTE_HEAD_RY = LINE_SPACING / 2.8; // Vertical radius for ellipse note head
 
 /**
  * Creates and appends an SVG element to the container.
@@ -334,8 +337,32 @@ function handleStaffMouseDown(event, svg) {
 
     console.log(`[MouseDown] Final Result: Note Name = ${noteName || 'Out of range'}`); // Log the final result
 
+    // --- Display Placed Note ---
+    const placedNoteElement = svg.getElementById("placed-note");
+    if (placedNoteElement) {
+        if (noteName) {
+            // Calculate horizontal position, constrained like the cursor
+            const viewBoxWidth = parseFloat(svg.getAttribute("viewBox").split(' ')[2]);
+            const cursorX = Math.max(
+                STAFF_START_X + NOTE_HEAD_RX + LEDGER_LINE_EXTENSION, // Adjust for ellipse radius
+                Math.min(coords.x, viewBoxWidth - STAFF_END_X_MARGIN - NOTE_HEAD_RX - LEDGER_LINE_EXTENSION)
+            );
+
+            placedNoteElement.setAttribute("cx", cursorX);
+            placedNoteElement.setAttribute("cy", snappedY);
+            // Optional: Adjust rotation center if rotating
+            // placedNoteElement.setAttribute("transform", `rotate(-15 ${cursorX} ${snappedY})`);
+            placedNoteElement.setAttribute("visibility", "visible");
+            console.log(`[MouseDown] Displaying placed note at x=${cursorX.toFixed(2)}, y=${snappedY}`);
+        } else {
+            // Hide the note if the click was out of range
+            placedNoteElement.setAttribute("visibility", "hidden");
+            console.log(`[MouseDown] Hiding placed note (click out of range)`);
+        }
+    }
+
     if (noteName) {
-        // Future: Place note visual, trigger sound
+        // Future: Trigger sound
     }
 }
 
@@ -364,6 +391,17 @@ export function renderStaff(containerId) {
     const notesGroup = document.createElementNS(SVG_NAMESPACE, "g");
     notesGroup.id = "notes-group";
     svg.appendChild(notesGroup);
+
+    // Placed note indicator (initially hidden)
+    const placedNote = document.createElementNS(SVG_NAMESPACE, "ellipse");
+    placedNote.id = "placed-note";
+    placedNote.setAttribute("rx", NOTE_HEAD_RX);
+    placedNote.setAttribute("ry", NOTE_HEAD_RY);
+    placedNote.setAttribute("fill", PLACED_NOTE_COLOR);
+    placedNote.setAttribute("visibility", "hidden"); // Start hidden
+    // Add slight rotation for a more traditional note head look
+    // placedNote.setAttribute("transform", "rotate(-15)"); // Optional: Requires cx, cy for rotation center
+    notesGroup.appendChild(placedNote); // Add to notes group
 
     // Group for ledger lines
     const ledgerLinesGroup = document.createElementNS(SVG_NAMESPACE, "g");
