@@ -166,7 +166,7 @@ function getVerticalPositionInfo(yCoord) {
     // Calculate position relative to the top line (E5 = Y=0), rounding to nearest half-step (line or space)
     const position = Math.round(yCoord / halfSpacing);
     const snappedY = position * halfSpacing;
-    console.log(`Raw Y: ${yCoord.toFixed(2)}, Snapped Y: ${snappedY}`); // Log raw and snapped Y
+    // console.log(`Raw Y: ${yCoord.toFixed(2)}, Snapped Y: ${snappedY}`); // Removed noisy log
 
     let ledgerLinesNeeded = 0;
     const topStaffLineY = 0;
@@ -202,11 +202,11 @@ function getVerticalPositionInfo(yCoord) {
         // ledgerLinesNeeded remains 0 if the condition isn't met.
     }
 
-    console.log(`Calculated ledgerLinesNeeded (before clamp): ${ledgerLinesNeeded}`); // Log calculated value
+    // console.log(`Calculated ledgerLinesNeeded (before clamp): ${ledgerLinesNeeded}`); // Removed noisy log
 
     // Clamp ledger lines
     const clampedLedgerLines = Math.max(-MAX_LEDGER_LINES, Math.min(MAX_LEDGER_LINES, ledgerLinesNeeded));
-    console.log(`Clamped ledgerLinesNeeded: ${clampedLedgerLines}`); // Log clamped value
+    // console.log(`Clamped ledgerLinesNeeded: ${clampedLedgerLines}`); // Removed noisy log
 
     return { snappedY, ledgerLinesNeeded: clampedLedgerLines };
 }
@@ -296,7 +296,6 @@ function updateLedgerLines(svg, group, ledgerLinesNeeded, snappedY, cursorX) {
 
 function handleStaffMouseMove(event, svg) {
     const coords = getSVGCoordinates(svg, event);
-    // console.log(`Mouse Move - SVG Coords: x=${coords.x.toFixed(2)}, y=${coords.y.toFixed(2)}`);
 
     // Ensure cursor stays within horizontal bounds where lines are drawn
     const viewBoxWidth = parseFloat(svg.getAttribute("viewBox").split(' ')[2]);
@@ -304,7 +303,7 @@ function handleStaffMouseMove(event, svg) {
 
 
     const { snappedY, ledgerLinesNeeded } = getVerticalPositionInfo(coords.y);
-    console.log(`[MouseMove] Vertical Info: snappedY=${snappedY}, ledgerLinesNeeded=${ledgerLinesNeeded}`); // Log values used for rendering
+    // console.log(`[MouseMove] Vertical Info: snappedY=${snappedY}, ledgerLinesNeeded=${ledgerLinesNeeded}`); // Removed noisy log
 
     // Update Cursor
     const cursorIndicator = svg.getElementById("cursor-indicator");
@@ -333,7 +332,7 @@ function handleStaffMouseLeave(event, svg) {
     if (ledgerLinesGroup) {
         ledgerLinesGroup.innerHTML = ''; // Clear lines
     }
-     console.log("Mouse Leave Staff");
+    // console.log("Mouse Leave Staff"); // Removed noisy log
 }
 
 function handleStaffMouseDown(event, svg) {
@@ -384,24 +383,24 @@ function handleStaffMouseDown(event, svg) {
     const sampler = getSampler();
 
     // --- Stop previous note & Cancel its pending release before starting a new note ---
-    if (releaseTimeoutId && currentlyPlayingNote && sampler) {
-        // Immediately release the note that was scheduled to be released
-        console.log(`[MouseDown] Immediately releasing previously scheduled note: ${currentlyPlayingNote}`);
-        try {
-            sampler.triggerRelease(currentlyPlayingNote);
-        } catch (error) {
-             console.error(`Error immediately releasing note ${currentlyPlayingNote}:`, error);
+    if (releaseTimeoutId) {
+        console.log(`[MouseDown] Found active release timer ID: ${releaseTimeoutId}`);
+        if (currentlyPlayingNote && sampler) {
+            // Immediately release the note that was scheduled to be released
+            console.log(`[MouseDown] => Calling sampler.triggerRelease(${currentlyPlayingNote}) NOW.`);
+            try {
+                sampler.triggerRelease(currentlyPlayingNote);
+            } catch (error) {
+                 console.error(`[MouseDown] Error immediately releasing note ${currentlyPlayingNote}:`, error);
+            }
+        } else {
+            console.log("[MouseDown] => No note or sampler found to release immediately, just clearing timer.");
         }
         // Now clear the timer associated with it
         clearTimeout(releaseTimeoutId);
+        console.log(`[MouseDown] Cleared timeout ID: ${releaseTimeoutId}`);
         releaseTimeoutId = null;
-        currentlyPlayingNote = null; // Clear the note tracker as it's now released
-        console.log("[MouseDown] Cancelled pending release timer.");
-    } else if (releaseTimeoutId) {
-         // If there's a timer but no tracked note (shouldn't happen often), just clear it
-         clearTimeout(releaseTimeoutId);
-         releaseTimeoutId = null;
-         console.log("[MouseDown] Cancelled pending release timer (no note tracked).");
+        currentlyPlayingNote = null; // Clear the note tracker as it's now released (or was never set)
     }
 
 
@@ -436,29 +435,40 @@ function handleStaffMouseDown(event, svg) {
 function handleStaffMouseUp(event, svg) {
     // We don't necessarily need coordinates for mouseup action itself
     // const coords = getSVGCoordinates(svg, event);
-    console.log(`Mouse Up detected (global listener).`);
+    // console.log(`Mouse Up detected (global listener).`); // Removed noisy log
 
     // --- Schedule Delayed Stop Audio ---
     const sampler = getSampler();
     if (sampler && currentlyPlayingNote) {
         const noteToRelease = currentlyPlayingNote; // Capture the note to release
-        console.log(`[MouseUp] Scheduling release for: ${noteToRelease} in 500ms`);
 
         // Clear any existing timer before setting a new one (safety measure)
         if (releaseTimeoutId) {
+            console.warn(`[MouseUp] Found existing release timer ID ${releaseTimeoutId} before scheduling. Clearing it.`);
             clearTimeout(releaseTimeoutId);
         }
 
+        console.log(`[MouseUp] Scheduling release for: ${noteToRelease} in 500ms`);
         releaseTimeoutId = setTimeout(() => {
-            console.log(`[Timeout] Releasing note: ${noteToRelease}`);
+            const currentTimerId = releaseTimeoutId; // Capture ID at execution time
+            console.log(`[Timeout Callback] Executing for timer ID: ${currentTimerId}. Releasing note: ${noteToRelease}`);
             try {
                 sampler.triggerRelease(noteToRelease);
+                console.log(`[Timeout Callback] Called sampler.triggerRelease(${noteToRelease})`);
             } catch (error) {
-                console.error(`Error in delayed release for note ${noteToRelease}:`, error);
+                console.error(`[Timeout Callback] Error in delayed release for note ${noteToRelease}:`, error);
             }
-            releaseTimeoutId = null; // Clear the ID after execution
+            // Only clear the ID if it matches the one this timeout was created with
+            // Prevents a rapid click sequence from nullifying the wrong timer ID
+            if (releaseTimeoutId === currentTimerId) {
+                releaseTimeoutId = null;
+                console.log(`[Timeout Callback] Cleared releaseTimeoutId.`);
+            } else {
+                 console.warn(`[Timeout Callback] releaseTimeoutId (${releaseTimeoutId}) does not match this timer's ID (${currentTimerId}). Not clearing.`);
+            }
         }, 500); // 500ms delay
 
+        console.log(`[MouseUp] Scheduled timer ID: ${releaseTimeoutId}`);
         currentlyPlayingNote = null; // Clear the *currently playing* tracker immediately
 
     } else if (sampler && !currentlyPlayingNote) {
