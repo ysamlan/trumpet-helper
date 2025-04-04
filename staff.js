@@ -76,9 +76,9 @@ function drawStaffLines(svg, width) {
 function drawTrebleClef(svg) {
     const clef = document.createElementNS(SVG_NAMESPACE, "text");
     clef.setAttribute("x", CLEF_X);
-    // Position Y based on the middle line (G4 line), index 1 from top (0-indexed)
-    const middleLineY = 1 * LINE_SPACING;
-    clef.setAttribute("y", middleLineY + CLEF_Y_OFFSET);
+    // Position Y based on the G4 line (Line 4 from top, Y=36, Step 6)
+    const g4LineY = 6 * (LINE_SPACING / 2); // Calculate Y for Step 6
+    clef.setAttribute("y", g4LineY + CLEF_Y_OFFSET);
     clef.setAttribute("font-size", `${STAFF_HEIGHT * 2.4}px`); // Adjust size relative to staff height
     clef.setAttribute("dominant-baseline", "middle"); // Better vertical alignment
     clef.setAttribute("fill", STROKE_COLOR);
@@ -102,36 +102,41 @@ function getSVGCoordinates(svg, event) {
 
 // --- Note Calculation Data (C Major) ---
 
-// Maps vertical steps (half line spacings) relative to E5 (Y=0, step=0)
+// Maps vertical steps (half line spacings) relative to the TOP staff line (F5, Y=0, step=0)
 // to note names in C Major. Covers range from 4 ledger lines above to 4 below.
+// Based on standard Treble Clef notation (Lines EGBDF, Spaces FACE from bottom up).
 const STEP_TO_NOTE_MAP = Object.freeze({
-  [-9]: "G6", // Y=-54 (Space above 4th ledger)
-  [-8]: "F6", // Y=-48 (4th ledger line above)
-  [-7]: "E6", // Y=-42 (Space above 3rd ledger)
-  [-6]: "D6", // Y=-36 (3rd ledger line above)
-  [-5]: "C6", // Y=-30 (Space above 2nd ledger)
-  [-4]: "B5", // Y=-24 (2nd ledger line above)
-  [-3]: "A5", // Y=-18 (Space above 1st ledger)
-  [-2]: "G5", // Y=-12 (1st ledger line above)
-  [-1]: "F5", // Y=-6  (Space above staff)
-  [0]: "E5",  // Y=0   (Top staff line)
-  [1]: "D5",  // Y=6
-  [2]: "C5",  // Y=12
-  [3]: "B4",  // Y=18
-  [4]: "A4",  // Y=24
-  [5]: "G4",  // Y=30  (Treble clef line)
-  [6]: "F4",  // Y=36
-  [7]: "E4",  // Y=42
-  [8]: "D4",  // Y=48  (Bottom staff line)
-  [9]: "C4",  // Y=54  (Middle C space)
-  [10]: "B3", // Y=60  (1st ledger line below)
-  [11]: "A3", // Y=66  (Space below 1st ledger)
-  [12]: "G3", // Y=72  (2nd ledger line below)
-  [13]: "F3", // Y=78  (Space below 2nd ledger)
-  [14]: "E3", // Y=84  (3rd ledger line below)
-  [15]: "D3", // Y=90  (Space below 3rd ledger)
-  [16]: "C3", // Y=96  (4th ledger line below)
-  [17]: "B2"  // Y=102 (Space below 4th ledger)
+  // Notes above staff
+  [-9]: "A6",  // Y=-54 (Space above 4th ledger)
+  [-8]: "G6",  // Y=-48 (4th ledger line above)
+  [-7]: "F6",  // Y=-42 (Space above 3rd ledger)
+  [-6]: "E6",  // Y=-36 (3rd ledger line above)
+  [-5]: "D6",  // Y=-30 (Space above 2nd ledger)
+  [-4]: "C6",  // Y=-24 (2nd ledger line above)
+  [-3]: "B5",  // Y=-18 (Space above 1st ledger)
+  [-2]: "A5",  // Y=-12 (1st ledger line above)
+  [-1]: "G5",  // Y=-6  (Space above staff)
+  // Staff notes
+  [0]: "F5",   // Y=0   (Line 1 - Top)
+  [1]: "E5",   // Y=6   (Space 1)
+  [2]: "D5",   // Y=12  (Line 2)
+  [3]: "C5",   // Y=18  (Space 2)
+  [4]: "B4",   // Y=24  (Line 3)
+  [5]: "A4",   // Y=30  (Space 3)
+  [6]: "G4",   // Y=36  (Line 4 - G Clef Line)
+  [7]: "F4",   // Y=42  (Space 4 - Bottom Space)
+  [8]: "E4",   // Y=48  (Line 5 - Bottom)
+  // Notes below staff
+  [9]: "D4",   // Y=54  (Space below staff)
+  [10]: "C4",  // Y=60  (1st ledger line below - Middle C)
+  [11]: "B3",  // Y=66  (Space below 1st ledger)
+  [12]: "A3",  // Y=72  (2nd ledger line below)
+  [13]: "G3",  // Y=78  (Space below 2nd ledger)
+  [14]: "F3",  // Y=84  (3rd ledger line below)
+  [15]: "E3",  // Y=90  (Space below 3rd ledger)
+  [16]: "D3",  // Y=96  (4th ledger line below)
+  [17]: "C3"   // Y=102 (Space below 4th ledger)
+  // B2 would be Step 18 / Y=108
 });
 
 
