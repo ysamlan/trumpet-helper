@@ -3,8 +3,8 @@ const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 const STAFF_LINES = 5;
 const LINE_SPACING = 12; // Vertical distance between lines
 const STAFF_HEIGHT = (STAFF_LINES - 1) * LINE_SPACING;
-const CLEF_X = 10; // X position of the clef
-const CLEF_Y_OFFSET = 3; // Fine-tuning clef vertical position relative to center line
+const CLEF_X = 42; // X position of the clef
+const CLEF_Y_OFFSET = 16; // Fine-tuning clef vertical position relative to center line
 const STAFF_START_X = 50; // Where staff lines begin after clef
 const STAFF_END_X_MARGIN = 10; // Margin from the right edge
 const STROKE_COLOR = "#333"; // Color for lines and clef
@@ -79,7 +79,7 @@ function drawTrebleClef(svg) {
     // Position Y based on the middle line (G4 line), index 1 from top (0-indexed)
     const middleLineY = 1 * LINE_SPACING;
     clef.setAttribute("y", middleLineY + CLEF_Y_OFFSET);
-    clef.setAttribute("font-size", `${STAFF_HEIGHT * 1.5}px`); // Adjust size relative to staff height
+    clef.setAttribute("font-size", `${STAFF_HEIGHT * 2.4}px`); // Adjust size relative to staff height
     clef.setAttribute("dominant-baseline", "middle"); // Better vertical alignment
     clef.setAttribute("fill", STROKE_COLOR);
     clef.textContent = "\u{1D11E}"; // Unicode for Treble Clef (G clef)
