@@ -78,6 +78,41 @@ function drawTrebleClef(svg) {
 }
 
 /**
+ * Converts mouse event coordinates to SVG coordinates.
+ * @param {SVGSVGElement} svg - The SVG element.
+ * @param {MouseEvent} event - The mouse event.
+ * @returns {{x: number, y: number}} SVG coordinates.
+ */
+function getSVGCoordinates(svg, event) {
+    const pt = svg.createSVGPoint();
+    pt.x = event.clientX;
+    pt.y = event.clientY;
+    const svgPoint = pt.matrixTransform(svg.getScreenCTM().inverse());
+    return { x: svgPoint.x, y: svgPoint.y };
+}
+
+// --- Event Handlers ---
+
+function handleStaffMouseMove(event, svg) {
+    const coords = getSVGCoordinates(svg, event);
+    console.log(`Mouse Move - SVG Coords: x=${coords.x.toFixed(2)}, y=${coords.y.toFixed(2)}`);
+    // Future: Update cursor indicator, show ledger lines
+}
+
+function handleStaffMouseDown(event, svg) {
+    const coords = getSVGCoordinates(svg, event);
+    console.log(`Mouse Down - SVG Coords: x=${coords.x.toFixed(2)}, y=${coords.y.toFixed(2)}`);
+    // Future: Place note, trigger sound
+}
+
+function handleStaffMouseUp(event, svg) {
+    const coords = getSVGCoordinates(svg, event);
+    console.log(`Mouse Up - SVG Coords: x=${coords.x.toFixed(2)}, y=${coords.y.toFixed(2)}`);
+    // Future: Stop sound
+}
+
+
+/**
  * Renders the musical staff (lines and clef) within the specified container.
  * @param {string} containerId - The ID of the HTML element to render the staff into.
  */
@@ -104,6 +139,20 @@ export function renderStaff(containerId) {
      interactionLayer.setAttribute("fill", "transparent"); // Make it invisible
      interactionLayer.id = "staff-interaction-layer"; // ID for attaching events
      svg.appendChild(interactionLayer);
+
+    // Attach event listeners to the interaction layer
+    interactionLayer.addEventListener('mousemove', (e) => handleStaffMouseMove(e, svg));
+    interactionLayer.addEventListener('mousedown', (e) => handleStaffMouseDown(e, svg));
+    // Mouseup might be better on the window to catch releases outside the SVG
+    window.addEventListener('mouseup', (e) => {
+        // Check if the mouse *down* originated within the staff area if needed,
+        // but for now, just log any mouseup.
+        // We pass the SVG element for coordinate conversion context if needed later.
+        handleStaffMouseUp(e, svg);
+    });
+    // Add mouseleave to hide cursor/ledger lines later
+    // interactionLayer.addEventListener('mouseleave', (e) => handleStaffMouseLeave(e, svg));
+
 
     console.log(`Staff rendered in #${containerId}`);
 }
