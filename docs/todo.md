@@ -4,8 +4,8 @@
 
 * [X] **1.1:** Set up `index.html` with boilerplate and main layout divs (`#app-container`, `#staff-area`, `#controls-area`, `#trumpet-area`, `#fingering-options-area`).
 * [X] **1.2:** Create `style.css`, link it, and add basic CSS for side-by-side layout (using panels if desired) and visual placeholders for the main areas.
-* [ ] **1.3:** Create `staff.js` with `renderStaff` function to draw static 5-line staff and treble clef using SVG in `#staff-area`. Call from `app.js`.
-* [ ] **1.4:** Add `mousemove`, `mousedown`, `mouseup` listeners to the staff SVG in `staff.js` to log coordinates/position info.
+* [X] **1.3:** Create `staff.js` with `renderStaff` function to draw static 5-line staff and treble clef using SVG in `#staff-area`. Call from `app.js`.
+* [ ] **1.4:** Add `mousemove`, `mousedown`, `mouseup` listeners to the staff SVG interaction layer (`#staff-interaction-layer`) in `staff.js` to log coordinates/position info.
 * [ ] **1.5:** Implement dynamic ledger line display logic in `staff.js` `mousemove` handler (add/remove lines, max 4).
 * [ ] **1.5:** Implement visual cursor indicator (`#cursor-indicator` SVG circle/note) in `staff.js` that follows mouse and snaps vertically to lines/spaces. Hide on `mouseleave`.
 * [ ] **1.6:** Implement `getNoteFromPosition(yCoord)` in `staff.js` to calculate note name (pitch+octave) based on Y coordinate (assume C Major initially). Log note on click.

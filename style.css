@@ -140,8 +140,13 @@ footer {
     background-color: #f8f9fa;
 }
 
-/* Add placeholder text */
-#staff-area::before { content: 'Staff Area'; }
+/* Remove placeholder text for staff area now that it's rendered */
+#staff-area {
+    /* Ensure SVG scales nicely */
+    overflow: hidden; /* Hide parts of SVG extending beyond bounds if fixed height */
+    min-height: 200px; /* Ensure enough space for staff + ledger lines later */
+}
+#staff-area::before { content: ''; } /* Remove placeholder */
 #controls-area::before { content: 'Controls Area'; }
 #trumpet-area::before { content: 'Trumpet Area'; }
 #fingering-options-area::before { content: 'Fingering Options Area'; }
