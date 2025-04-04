@@ -13,7 +13,7 @@ const MAX_LEDGER_LINES = 4;
 const LEDGER_LINE_EXTENSION = 8; // How far ledger line extends past cursor center
 const CURSOR_RADIUS = LINE_SPACING / 2.5; // Radius of the cursor indicator
 const CURSOR_COLOR = "rgba(50, 50, 200, 0.6)"; // Semi-transparent blue
-const PLACED_NOTE_COLOR = "#444444"; // Dark gray for placed note
+const PLACED_NOTE_COLOR = "#666666"; // Lighter gray for placed note
 const NOTE_HEAD_RX = LINE_SPACING / 2.2; // Horizontal radius for ellipse note head
 const NOTE_HEAD_RY = LINE_SPACING / 2.8; // Vertical radius for ellipse note head
 
@@ -79,9 +79,9 @@ function drawStaffLines(svg, width) {
 function drawTrebleClef(svg) {
     const clef = document.createElementNS(SVG_NAMESPACE, "text");
     clef.setAttribute("x", CLEF_X);
-    // Position Y based on the G4 line (Line 4 from top, Y=36, Step 6)
-    const g4LineY = 6 * (LINE_SPACING / 2); // Calculate Y for Step 6
-    clef.setAttribute("y", g4LineY + CLEF_Y_OFFSET);
+    // Position Y based on the middle line (D5 line, Y=12, Step 2)
+    const middleLineY = 2 * (LINE_SPACING / 2); // Calculate Y for Step 2
+    clef.setAttribute("y", middleLineY + CLEF_Y_OFFSET);
     clef.setAttribute("font-size", `${STAFF_HEIGHT * 2.4}px`); // Adjust size relative to staff height
     clef.setAttribute("dominant-baseline", "middle"); // Better vertical alignment
     clef.setAttribute("fill", STROKE_COLOR);
