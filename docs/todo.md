@@ -19,7 +19,7 @@
 * [X] **2.4:** Add exported `updateTrumpetSVG(fingeringArray)` function to `trumpet.js` to lower/raise valve caps (`#valve-cap-X`) using `transform: translateY` based on the input array or null.
 * [X] **2.5:** Enhance `updateTrumpetSVG` to add/remove valve-specific CSS highlight classes (`.valve-pressed-X`) and add/remove SVG `<text>` elements (`.valve-number`) displaying "1", "2", or "3" on pressed valve caps.
 * [X] **2.5:** Add CSS rules for `.valve-pressed-X` highlight colors and `.valve-number` text styling in `style.css`.
-* [ ] **2.6:** Modify `staff.js` `mousedown` handler: Import necessary functions, call `getFingering`, and call `updateTrumpetSVG` with the primary fingering (or null).
+* [X] **2.6:** Modify `staff.js` `mousedown` handler: Import necessary functions, call `getFingering`, and call `updateTrumpetSVG` with the primary fingering (or null).
 
 ## Phase 3: Audio Integration
 

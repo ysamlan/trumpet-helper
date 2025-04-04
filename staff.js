@@ -17,6 +17,10 @@ const PLACED_NOTE_COLOR = "#666666"; // Lighter gray for placed note
 const NOTE_HEAD_RX = LINE_SPACING / 2.2; // Horizontal radius for ellipse note head
 const NOTE_HEAD_RY = LINE_SPACING / 2.8; // Vertical radius for ellipse note head
 
+// --- Imports for Interaction ---
+import { getFingering } from './data.js';
+import { updateTrumpetSVG } from './trumpet.js';
+
 /**
  * Creates and appends an SVG element to the container.
  * @param {string} containerId - The ID of the container element.
@@ -361,8 +365,18 @@ function handleStaffMouseDown(event, svg) {
         }
     }
 
+    // --- Update Trumpet Fingering Display ---
+    const fingeringInfo = noteName ? getFingering(noteName) : null;
+    const primaryFingering = fingeringInfo ? fingeringInfo.primary : null;
+    console.log(`[MouseDown] Fingering Info:`, fingeringInfo);
+    console.log(`[MouseDown] Calling updateTrumpetSVG with:`, primaryFingering);
+    updateTrumpetSVG(primaryFingering); // Update trumpet visual
+
     if (noteName) {
         // Future: Trigger sound
+        // Future: Display alternate fingerings (Phase 5)
+    } else {
+        // Future: Clear alternate fingerings display (Phase 5)
     }
 }
 
