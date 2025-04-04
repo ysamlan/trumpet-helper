@@ -145,22 +145,5 @@ export function getSampler() {
     return trumpetSampler;
 }
 
-/**
- * Checks if the audio context is running and starts it if necessary.
- * This often needs to be triggered by a user gesture (like a click).
- * @returns {Promise<void>} A promise that resolves when the context is running.
- */
-export async function ensureAudioContextStarted() {
-    if (typeof Tone !== 'undefined' && Tone.context.state !== 'running') {
-        console.log('Audio context is not running, attempting to start...');
-        try {
-            await Tone.start();
-            console.log('Audio context started successfully.');
-        } catch (error) {
-            console.error('Failed to start audio context:', error);
-            // Handle the error appropriately, maybe disable audio features
-        }
-    } else if (typeof Tone !== 'undefined') {
-        // console.log('Audio context is already running.'); // Optional log
-    }
-}
+// Removed ensureAudioContextStarted as the older Tone.js version likely handles it implicitly
+// or doesn't have the Tone.start() static method.

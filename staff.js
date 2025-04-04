@@ -20,7 +20,7 @@ const NOTE_HEAD_RY = LINE_SPACING / 2.8; // Vertical radius for ellipse note hea
 // --- Imports for Interaction ---
 import { getFingering } from './data.js';
 import { updateTrumpetSVG } from './trumpet.js';
-import { getSampler, ensureAudioContextStarted } from './audio.js';
+import { getSampler } from './audio.js'; // Removed ensureAudioContextStarted
 
 /**
  * Creates and appends an SVG element to the container.
@@ -374,8 +374,8 @@ function handleStaffMouseDown(event, svg) {
     updateTrumpetSVG(primaryFingering); // Update trumpet visual
 
     // --- Trigger Audio ---
-    // Ensure audio context is started (required on user gesture)
-    ensureAudioContextStarted(); // No need to await, let it run in background
+    // No need to explicitly start context with this older Tone.js version
+    // ensureAudioContextStarted();
 
     const sampler = getSampler();
     if (noteName && sampler) {
