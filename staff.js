@@ -22,6 +22,9 @@ import { getFingering } from './data.js';
 import { updateTrumpetSVG } from './trumpet.js';
 import { getSampler } from './audio.js'; // Removed ensureAudioContextStarted
 
+// --- Module State ---
+let currentlyPlayingNote = null; // Keep track of the note triggered on mousedown
+
 /**
  * Creates and appends an SVG element to the container.
  * @param {string} containerId - The ID of the container element.
@@ -381,14 +384,27 @@ function handleStaffMouseDown(event, svg) {
     if (noteName && sampler) {
         console.log(`[MouseDown] Triggering audio attack for: ${noteName}`);
         try {
+            // Release any previously playing note before starting a new one
+            if (currentlyPlayingNote) {
+                sampler.triggerRelease(currentlyPlayingNote);
+                console.log(`[MouseDown] Released previous note: ${currentlyPlayingNote}`);
+            }
             sampler.triggerAttack(noteName);
+            currentlyPlayingNote = noteName; // Store the note being played
         } catch (error) {
-            console.error(`Error triggering attack for note ${noteName}:`, error);
+            console.error(`Error triggering attack/release for note ${noteName}:`, error);
+            currentlyPlayingNote = null; // Clear if error occurs
         }
         // Future: Display alternate fingerings (Phase 5)
-    } else if (!sampler) {
-        console.warn("[MouseDown] Sampler not ready, cannot play audio.");
-    } else { // noteName is null
+    } else {
+        // If no note is played (out of range or sampler not ready), clear the tracker
+        currentlyPlayingNote = null;
+        if (!sampler) {
+            console.warn("[MouseDown] Sampler not ready, cannot play audio.");
+        }
+    }
+
+    if (!noteName) { // noteName is null
         // Future: Clear alternate fingerings display (Phase 5)
     }
 }
@@ -400,17 +416,22 @@ function handleStaffMouseUp(event, svg) {
 
     // --- Stop Audio ---
     const sampler = getSampler();
-    if (sampler) {
-        console.log("[MouseUp] Triggering audio release.");
+    if (sampler && currentlyPlayingNote) {
+        console.log(`[MouseUp] Triggering audio release for: ${currentlyPlayingNote}`);
         try {
-            // Release all currently playing notes on this sampler
-            sampler.triggerRelease();
+            // Release the specific note that was triggered on mousedown
+            sampler.triggerRelease(currentlyPlayingNote);
         } catch (error) {
-            console.error("Error triggering release:", error);
+            console.error(`Error triggering release for note ${currentlyPlayingNote}:`, error);
         }
-    } else {
-        // Sampler might not be ready yet, or failed to load. Log is handled in getSampler.
+        currentlyPlayingNote = null; // Clear the tracker
+    } else if (sampler && !currentlyPlayingNote) {
+        // Mouseup happened, but no note was actively tracked from mousedown
+        // Optional: Could call sampler.triggerRelease() here as a fallback,
+        // but let's stick to releasing only the tracked note for now.
+        console.log("[MouseUp] No tracked note to release.");
     }
+    // If sampler is null, log is handled in getSampler.
 }
 
 
