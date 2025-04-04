@@ -82,6 +82,39 @@ export async function renderTrumpetSVG(containerId, svgPath = 'trumpet.svg') {
 }
 
 
-// Future: Add updateTrumpetSVG function here
-// This function will need to select elements by their new IDs (#valve-cap-1, etc.)
-// and apply transforms/style changes.
+/**
+ * Updates the visual state of the trumpet valve caps based on the fingering.
+ * @param {number[] | null} fingeringArray - An array of pressed valve numbers (e.g., [1, 3], []) or null for open/reset.
+ */
+export function updateTrumpetSVG(fingeringArray) {
+    // Ensure fingeringArray is an array, even if null is passed
+    const pressedValves = new Set(fingeringArray || []); // Use a Set for efficient lookup
+
+    // Find the SVG element within the trumpet area
+    const container = document.getElementById('trumpet-area');
+    const svg = container?.querySelector('svg');
+    if (!svg) {
+        console.warn("Trumpet SVG element not found for updating.");
+        return;
+    }
+
+    for (let i = 1; i <= 3; i++) {
+        const valveCap = svg.getElementById(`valve-cap-${i}`);
+        if (!valveCap) {
+            console.warn(`Valve cap element #valve-cap-${i} not found.`);
+            continue;
+        }
+
+        if (pressedValves.has(i)) {
+            // Apply transform to lower the valve cap
+            valveCap.setAttribute("transform", VALVE_DOWN_TRANSFORM);
+            // Future: Apply color/highlight class (Task 2.5)
+            console.log(`Valve ${i} pressed.`);
+        } else {
+            // Remove transform to raise the valve cap back to default
+            valveCap.removeAttribute("transform");
+            // Future: Remove color/highlight class (Task 2.5)
+            console.log(`Valve ${i} released.`);
+        }
+    }
+}
