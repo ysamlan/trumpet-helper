@@ -23,7 +23,7 @@
 
 ## Phase 3: Audio Integration
 
-* [ ] **3.1:** Add Tone.js CDN script tag to `index.html`.
+* [X] **3.1:** Add Tone.js CDN script tag to `index.html`.
 * [ ] **3.2:** Create `audio.js` with `initAudio` async function to create/load `Tone.Sampler` with trumpet samples (using `unpkg` URLs) and `getSampler` function. Call `initAudio` from `app.js` and handle loading state/feedback.
 * [ ] **3.3:** Modify `staff.js` `mousedown` handler to get sampler and call `sampler.triggerAttack(noteName)`. Ensure `Tone.start()` is called on user gesture if needed.
 * [ ] **3.3:** Add global `mouseup` listener (e.g., on `window`) to get sampler and call `sampler.triggerRelease()`.
