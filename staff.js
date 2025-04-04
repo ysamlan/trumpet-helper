@@ -168,11 +168,10 @@ function updateLedgerLines(svg, group, ledgerLinesNeeded, snappedY, cursorX) {
 
     if (ledgerLinesNeeded < 0) { // Lines above staff
         const numLines = Math.abs(ledgerLinesNeeded);
+        console.log(`Drawing ${numLines} ledger lines ABOVE staff (snappedY: ${snappedY}).`); // Log how many lines to attempt
         for (let i = 1; i <= numLines; i++) {
             // Calculate Y position for each ledger line above the staff
-            // Top line is E5 (Y=0). G5 is Y=-12. A5 is Y=-24. B5 is Y=-36. C6 is Y=-48? No, C6 is Y=-36
-            // Let's use standard notation mapping later. For now, just draw lines based on count.
-            // Lines are needed at Y = -12, -24, -36, -48
+            // Lines are needed at Y = -12 (G5), -24 (A5), -36 (C6), -48 (E6)
             const lineY = -i * LINE_SPACING;
              // Only draw the line if the cursor is *on* or *through* it
              // If cursor is on C6 space (snappedY=-30), need A5 line (-24)
@@ -194,10 +193,10 @@ function updateLedgerLines(svg, group, ledgerLinesNeeded, snappedY, cursorX) {
     } else if (ledgerLinesNeeded > 0) { // Lines below staff
         const numLines = ledgerLinesNeeded;
         const bottomStaffLineY = STAFF_HEIGHT;
+        console.log(`Drawing ${numLines} ledger lines BELOW staff (snappedY: ${snappedY}).`); // Log how many lines to attempt
         for (let i = 1; i <= numLines; i++) {
             // Calculate Y position for each ledger line below the staff
-            // Bottom line F4 (Y=48). D4 is Y=60. C4 is Y=72. B3 is Y=84? No, B3 is Y=72
-            // Lines are needed at Y = 60, 72, 84, 96
+            // Lines are needed at Y = 60 (D4), 72 (B3), 84 (G3), 96 (E3)
             const lineY = bottomStaffLineY + i * LINE_SPACING;
             // Only draw the line if the cursor is *on* or *through* it
             // If cursor is on C4 space (snappedY=66), need D4 line (60)
