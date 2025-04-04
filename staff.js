@@ -106,71 +106,38 @@ function getSVGCoordinates(svg, event) {
  */
 function getVerticalPositionInfo(yCoord) {
     const halfSpacing = LINE_SPACING / 2;
-    // Calculate position relative to the top line (E5), rounding to nearest half-step (line or space)
+    // Calculate position relative to the top line (E5 = Y=0), rounding to nearest half-step (line or space)
     const position = Math.round(yCoord / halfSpacing);
     const snappedY = position * halfSpacing;
 
     let ledgerLinesNeeded = 0;
     const topStaffLineY = 0;
-    const bottomStaffLineY = STAFF_HEIGHT;
+    const bottomStaffLineY = STAFF_HEIGHT; // Y=48 (F4 line)
 
-    if (snappedY < topStaffLineY) { // Above staff
-        // Calculate how many lines *above* the top line (negative value)
-        // Line C6 is at -LINE_SPACING, D6 space is -LINE_SPACING*1.5, E6 line is -LINE_SPACING*2 etc.
-        // Snapped Y = 0 (E5 line), -6 (F5 space), -12 (G5 line), -18 (A5 space), -24 (B5 line), -30 (C6 space), -36 (D6 line)
-        // We need ledger lines for C6 (-36), A5 (-24), F5 (-12) -> these are lines
-        if (snappedY <= -LINE_SPACING) { // C6 or higher requires ledger lines
-             ledgerLinesNeeded = -Math.ceil(Math.abs(snappedY / LINE_SPACING));
-             // Ensure it's a line position if snappedY is a multiple of LINE_SPACING
-             if (snappedY % LINE_SPACING !== 0) {
-                 // It's a space above a ledger line, the line count is correct,
-                 // but we draw based on the line below it.
-                 // Example: D6 space (snappedY = -42), needs 2 lines (C6, A5). ceil(42/12)=4. Needs adjustment?
-                 // Let's rethink: Count lines *away* from the staff boundary.
-                 // C6 (snappedY = -36) is 1 ledger line. Line index = -2.
-                 // A5 (snappedY = -24) is 1 ledger line. Line index = -1.
-                 // G5 (snappedY = -12) is 0 ledger lines. Line index = 0.
-                 // F5 (snappedY = -6) is 0 ledger lines. Space index = 0.5
-                 // E5 (snappedY = 0) is 0 ledger lines. Line index = 1.
+    if (snappedY < topStaffLineY) { // Notes above staff (E5 line is Y=0)
+        // Ledger lines start for notes above G5 (Y=-12)
+        // A5 space (Y=-18) needs 1 line. B5 line (Y=-24) needs 1 line.
+        // C6 space (Y=-30) needs 2 lines. D6 line (Y=-36) needs 2 lines.
+        if (snappedY <= -LINE_SPACING - halfSpacing) { // A5 space or higher
+            // Calculate how many lines are needed above the staff.
+            // Formula: ceil( abs(Y_coord / LineSpacing) - 1 )
+            ledgerLinesNeeded = -Math.ceil( Math.abs(snappedY / LINE_SPACING) - 1);
+        }
+        // Notes from F5 space (Y=-6) to G5 line (Y=-12) need 0 lines.
+        // Notes on E5 line (Y=0) need 0 lines.
+        // ledgerLinesNeeded remains 0 if the condition isn't met.
 
-                 // Calculate based on distance from nearest staff line (0 or STAFF_HEIGHT)
-                 const stepsAbove = Math.round(Math.abs(snappedY) / LINE_SPACING);
-                 if (stepsAbove >= 1 && snappedY % LINE_SPACING === 0) { // It's a line position above
-                     ledgerLinesNeeded = -stepsAbove;
-                 } else if (stepsAbove >= 1) { // It's a space position above
-                     ledgerLinesNeeded = -stepsAbove; // Needs line below it
-                 }
-            }
-             // Correct calculation: How many LINE_SPACING steps away is the line?
-             const lineIndex = Math.floor(snappedY / LINE_SPACING); // 0=E5, -1=G5, -2=B5, -3=D6
-             if (lineIndex <= -1) { // G5 or higher
-                 // Ledger lines needed for G5, B5, D6 etc. (Lines at index -1, -2, -3...)
-                 ledgerLinesNeeded = lineIndex; // e.g., G5 -> -1 ledger line (none), B5 -> -2 lines (A5), D6 -> -3 lines (C6, A5)
-                 // Let's try again: Count lines *beyond* the staff.
-                 // SnappedY = 0 (E5), -12 (G5), -24 (A5), -36 (C6), -48 (E6)
-                 // SnappedY = -6 (F5), -18 (G#5/Ab5 space), -30 (B5 space), -42 (D6 space)
-                 if (snappedY <= -LINE_SPACING) { // G5 or higher
-                     // Need line for A5 (-24), C6 (-36), E6 (-48)
-                     // Need line for G5 space (-18), B5 space (-30), D6 space (-42)
-                     // Number of lines = floor(abs(snappedY - halfSpacing) / LINE_SPACING)
-                     ledgerLinesNeeded = -Math.floor((Math.abs(snappedY) + halfSpacing) / LINE_SPACING);
-                 }
-            }
+    } else if (snappedY > bottomStaffLineY) { // Notes below staff (F4 line is Y=48)
+        // Ledger lines start for notes below E4 (Y=54)
+        // D4 line (Y=60) needs 1 line. C4 space (Y=66) needs 1 line.
+        // B3 line (Y=72) needs 2 lines. A3 space (Y=78) needs 2 lines.
+        if (snappedY >= bottomStaffLineY + LINE_SPACING) { // D4 line or lower
+            // Calculate how many lines are needed below the staff.
+            // Formula: ceil( (Y_coord - BottomLineY - HalfSpacing) / LineSpacing )
+            ledgerLinesNeeded = Math.ceil( (snappedY - bottomStaffLineY - halfSpacing) / LINE_SPACING );
         }
-    } else if (snappedY > bottomStaffLineY) { // Below staff
-        // Calculate how many lines *below* the bottom line (positive value)
-        // Bottom line Y = STAFF_HEIGHT (F4)
-        // Snapped Y = 48 (F4), 54 (E4 space), 60 (D4 line), 66 (C4 space), 72 (B3 line), 78 (A3 space), 84 (G3 line)
-        // Need ledger lines for D4 (60), B3 (72), G3 (84) -> these are lines
-        if (snappedY >= bottomStaffLineY + LINE_SPACING) { // D4 or lower requires ledger lines
-            // Number of lines = floor((snappedY - bottomStaffLineY - halfSpacing) / LINE_SPACING) + 1?
-            // D4 (60): floor((60 - 48 - 6)/12) = floor(6/12)=0. Needs 1.
-            // C4 (66): floor((66 - 48 - 6)/12) = floor(12/12)=1. Needs 1 (D4 line).
-            // B3 (72): floor((72 - 48 - 6)/12) = floor(18/12)=1. Needs 2.
-            // A3 (78): floor((78 - 48 - 6)/12) = floor(24/12)=2. Needs 2 (B3 line).
-            // G3 (84): floor((84 - 48 - 6)/12) = floor(30/12)=2. Needs 3.
-            ledgerLinesNeeded = Math.floor((snappedY - bottomStaffLineY + halfSpacing) / LINE_SPACING);
-        }
+        // Notes on F4 line (Y=48) or E4 space (Y=54) need 0 lines.
+        // ledgerLinesNeeded remains 0 if the condition isn't met.
     }
 
     // Clamp ledger lines
@@ -189,6 +156,7 @@ function getVerticalPositionInfo(yCoord) {
  */
 function updateLedgerLines(svg, group, ledgerLinesNeeded, snappedY, cursorX) {
     group.innerHTML = ''; // Clear existing lines
+    const halfSpacing = LINE_SPACING / 2; // Define halfSpacing here
 
     const ledgerLineLength = CURSOR_RADIUS * 2 + LEDGER_LINE_EXTENSION * 2;
     const x1 = cursorX - ledgerLineLength / 2;
