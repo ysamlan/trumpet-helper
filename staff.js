@@ -29,10 +29,15 @@ function createSVG(containerId) {
     container.innerHTML = '';
 
     const svg = document.createElementNS(SVG_NAMESPACE, "svg");
-    // Use viewBox for scalability, adjust aspect ratio as needed
-    // Width is somewhat arbitrary, height is based on staff + margins
-    const viewboxHeight = STAFF_HEIGHT + LINE_SPACING * 4; // Extra space above/below
-    const viewboxY = -LINE_SPACING * 2; // Center the staff vertically
+    // Use viewBox for scalability.
+    // Calculate height needed for staff + MAX_LEDGER_LINES above and below, plus one extra space buffer.
+    const totalVerticalSpaces = (STAFF_LINES - 1) + (MAX_LEDGER_LINES * 2) + 1; // Staff intervals + ledger lines + buffer
+    const viewboxHeight = totalVerticalSpaces * LINE_SPACING;
+    // Calculate top Y for viewBox: -(Spaces for max ledger lines + buffer space)
+    const viewboxY = -(MAX_LEDGER_LINES + 0.5) * LINE_SPACING; // Start slightly above the 4th ledger line space
+    // Example: MAX_LEDGER_LINES=4 -> viewboxY = -4.5 * 12 = -54
+    // Example: viewboxHeight = (4 + 8 + 1) * 12 = 13 * 12 = 156
+    // ViewBox will span Y=-54 to Y=102
     svg.setAttribute("viewBox", `0 ${viewboxY} 400 ${viewboxHeight}`); // Example width 400
     svg.setAttribute("width", "100%");
     svg.setAttribute("height", "100%"); // Adjust as needed, or set fixed height
@@ -294,11 +299,14 @@ export function renderStaff(containerId) {
     svg.appendChild(cursorIndicator);
 
 
+     // Get the calculated viewBox Y and Height to size the interaction layer correctly
+     const [vbX, vbY, vbWidth, vbHeight] = svg.getAttribute("viewBox").split(' ').map(parseFloat);
+
      const interactionLayer = document.createElementNS(SVG_NAMESPACE, "rect");
      interactionLayer.setAttribute("x", STAFF_START_X);
-     interactionLayer.setAttribute("y", -LINE_SPACING * 2); // Cover area above/below staff
-     interactionLayer.setAttribute("width", viewBoxWidth - STAFF_START_X);
-     interactionLayer.setAttribute("height", STAFF_HEIGHT + LINE_SPACING * 4);
+     interactionLayer.setAttribute("y", vbY); // Match viewBox top
+     interactionLayer.setAttribute("width", viewBoxWidth - STAFF_START_X); // Use calculated width
+     interactionLayer.setAttribute("height", vbHeight); // Match viewBox height
      interactionLayer.setAttribute("fill", "transparent"); // Make it invisible
      interactionLayer.id = "staff-interaction-layer"; // ID for attaching events
      svg.appendChild(interactionLayer);
