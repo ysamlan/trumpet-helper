@@ -33,7 +33,8 @@ const FLAT_POSITIONS = Object.freeze({ B: 4, E: 1, A: 5, D: 2, G: 6, C: 3, F: 7 
 import { getFingering, keySignatures } from './data.js';
 import { updateTrumpetSVG } from './trumpet.js';
 import { getSampler } from './audio.js';
-import { getCurrentKeySignature, getSelectedAccidental } from './app.js'; // Import key/accidental state
+import { getCurrentKeySignature, getSelectedAccidental, setSelectedAccidental } from './app.js'; // Import state functions
+import { resetAccidentalButtons } from './controls.js'; // Import controls reset
 
 // --- Module State ---
 let noteUnderMouse = null; // Tracks the note being attacked/held down
@@ -525,6 +526,12 @@ function handleStaffMouseDown(event, svg) {
     if (!noteName) { // noteName is null
         // Future: Clear alternate fingerings display (Phase 5)
     }
+
+    // --- Reset Accidental Override ---
+    // Reset the state and the button UI after the click action is complete
+    setSelectedAccidental(null);
+    resetAccidentalButtons();
+    console.log("[MouseDown] Accidental override reset.");
 }
 
 function handleStaffMouseUp(event, svg) {

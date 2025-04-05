@@ -43,7 +43,7 @@
 * [X] **4.5:** Add `selectedAccidental` state management to `app.js` (getter/setter, updated by callback from `initAccidentalControls`).
 * [X] **4.5:** Modify `staff.js` `mousedown` note calculation logic to prioritize `selectedAccidental` over key signature rules when determining the final `noteName`.
 * [X] **4.6:** Implement display of accidental symbol (`#placed-accidental` SVG text) next to `#placed-note` in `staff.js` `mousedown` handler, based on whether the final note required an explicit or key-signature accidental (including naturals overriding key sig).
-* [ ] **4.7:** Call `setSelectedAccidental(null)` and `resetAccidentalButtons()` at the end of the `staff.js` `mousedown` handler.
+* [X] **4.7:** Call `setSelectedAccidental(null)` and `resetAccidentalButtons()` at the end of the `staff.js` `mousedown` handler.
 * [ ] **4.8:** Add "Change Key" button (`#change-key-btn`) and modal HTML (`#key-popup`, overlay, content area, close button) to `index.html`.
 * [ ] **4.8:** Add CSS for basic modal show/hide functionality (`.hidden` class) and styling.
 * [ ] **4.8:** Add JS in `app.js` to handle showing/hiding the key popup via button/close/overlay clicks. Add `updateChangeKeyButtonText`.
