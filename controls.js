@@ -3,6 +3,8 @@
  * Manages UI controls like accidental buttons and alternate fingering buttons.
  */
 
+import { updateTrumpetSVG } from './trumpet.js'; // Import for alternate fingering updates
+
 const ACCIDENTAL_NATURAL = "\u266E";
 const ACCIDENTAL_SHARP = "\u266F";
 const ACCIDENTAL_FLAT = "\u266D";
