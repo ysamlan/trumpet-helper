@@ -31,10 +31,10 @@ const FLAT_POSITIONS = Object.freeze({ B: 4, E: 1, A: 5, D: 2, G: 6, C: 3, F: 7 
 
 // --- Imports for Interaction ---
 import { getFingering, keySignatures } from './data.js';
-import { updateTrumpetSVG } from './trumpet.js';
+import { updateTrumpetSVG, formatFingering } from './trumpet.js'; // Import formatFingering
 import { getSampler } from './audio.js';
-import { getCurrentKeySignature, getSelectedAccidental, setSelectedAccidental } from './app.js'; // Import state functions
-import { resetAccidentalButtons } from './controls.js'; // Import controls reset
+import { getCurrentKeySignature, getSelectedAccidental, setSelectedAccidental } from './app.js';
+import { resetAccidentalButtons } from './controls.js';
 
 // --- Module State ---
 let noteUnderMouse = null; // Tracks the note being attacked/held down
@@ -472,6 +472,37 @@ function handleStaffMouseDown(event, svg) {
     console.log(`[MouseDown] Fingering Info:`, fingeringInfo);
     console.log(`[MouseDown] Calling updateTrumpetSVG with:`, primaryFingering);
     updateTrumpetSVG(primaryFingering); // Update trumpet visual
+
+    // --- Display Alternate Fingerings ---
+    const optionsArea = document.getElementById('fingering-options-area');
+    optionsArea.innerHTML = ''; // Clear previous options
+    if (fingeringInfo) {
+        optionsArea.style.display = 'flex'; // Make area visible
+
+        // Create button for primary fingering
+        const primaryBtn = document.createElement('button');
+        primaryBtn.classList.add('fingering-option-btn', 'active'); // Primary is active by default
+        primaryBtn.textContent = formatFingering(fingeringInfo.primary);
+        primaryBtn.dataset.fingering = JSON.stringify(fingeringInfo.primary);
+        optionsArea.appendChild(primaryBtn);
+
+        // Create buttons for alternate fingerings
+        if (fingeringInfo.alternates && fingeringInfo.alternates.length > 0) {
+            fingeringInfo.alternates.forEach(altFingering => {
+                const altBtn = document.createElement('button');
+                altBtn.classList.add('fingering-option-btn');
+                altBtn.textContent = formatFingering(altFingering);
+                altBtn.dataset.fingering = JSON.stringify(altFingering);
+                optionsArea.appendChild(altBtn);
+            });
+        }
+        console.log(`[MouseDown] Displayed ${1 + (fingeringInfo.alternates?.length || 0)} fingering options.`);
+
+    } else {
+        optionsArea.style.display = 'none'; // Hide area if no fingering info
+        console.log("[MouseDown] No fingering info found, hiding options area.");
+    }
+
 
     // --- Trigger Audio ---
     // No need to explicitly start context with this older Tone.js version

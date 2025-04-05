@@ -156,3 +156,17 @@ export function updateTrumpetSVG(fingeringArray) {
         }
     }
 }
+
+/**
+ * Formats a fingering array into a display string.
+ * E.g., [] => "Open", [1, 3] => "1-3"
+ * @param {number[]} fingeringArray - The array of valve numbers.
+ * @returns {string} The formatted string representation.
+ */
+export function formatFingering(fingeringArray) {
+    if (!fingeringArray || fingeringArray.length === 0) {
+        return "Open";
+    }
+    // Sort numerically and join with hyphens
+    return [...fingeringArray].sort((a, b) => a - b).join('-');
+}
