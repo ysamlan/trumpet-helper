@@ -33,7 +33,7 @@ export function setCurrentKeySignature(keyName) {
             console.warn("Could not find staff SVG to update key signature display.");
         }
 
-        // Future: Update change key button text (Task 4.8)
+        updateChangeKeyButtonText(); // Update button text
     } else {
         console.warn(`Attempted to set invalid key signature: ${keyName}`);
     }
@@ -72,6 +72,39 @@ function handleAccidentalSelection(accidentalType) {
     setSelectedAccidental(accidentalType);
 }
 
+/**
+ * Updates the text of the "Change Key" button.
+ */
+function updateChangeKeyButtonText() {
+    const btn = document.getElementById('change-key-btn');
+    if (btn) {
+        btn.textContent = getCurrentKeySignature();
+    }
+}
+
+/**
+ * Shows the key signature selection popup.
+ */
+function showKeyPopup() {
+    const popup = document.getElementById('key-popup');
+    if (popup) {
+        popup.classList.remove('hidden');
+        console.log("Key signature popup shown.");
+        // Future: Call renderRadialMenu here (Task 4.10)
+    }
+}
+
+/**
+ * Hides the key signature selection popup.
+ */
+function hideKeyPopup() {
+    const popup = document.getElementById('key-popup');
+    if (popup) {
+        popup.classList.add('hidden');
+        console.log("Key signature popup hidden.");
+    }
+}
+
 
 /**
  * Initializes the application.
@@ -98,6 +131,23 @@ async function initializeApp() { // Make async to await SVG rendering
 
     // Initialize Controls
     initAccidentalControls(handleAccidentalSelection);
+    updateChangeKeyButtonText(); // Set initial button text
+
+    // --- Initialize Modal ---
+    const changeKeyBtn = document.getElementById('change-key-btn');
+    const keyPopupOverlay = document.getElementById('key-popup-overlay');
+    const keyPopupCloseBtn = document.getElementById('key-popup-close');
+
+    if (changeKeyBtn) {
+        changeKeyBtn.addEventListener('click', showKeyPopup);
+    }
+    if (keyPopupOverlay) {
+        keyPopupOverlay.addEventListener('click', hideKeyPopup);
+    }
+    if (keyPopupCloseBtn) {
+        keyPopupCloseBtn.addEventListener('click', hideKeyPopup);
+    }
+
 
     console.log("Application initialized (audio loading in background).");
 }

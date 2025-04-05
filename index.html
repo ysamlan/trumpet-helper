@@ -25,6 +25,7 @@
                     <button id="accidental-sharp" data-accidental="sharp">♯</button>
                     <button id="accidental-flat" data-accidental="flat">♭</button>
                 </div>
+                <button id="change-key-btn" class="control-button">C Major</button> <!-- Add Change Key Button -->
             </section>
             <section id="trumpet-area" aria-label="Trumpet Diagram Area">
                 <!-- Trumpet SVG will be rendered here -->
@@ -37,6 +38,20 @@
             <!-- Footer content if needed -->
         </footer>
     </div>
+
+    <!-- Key Signature Selection Modal -->
+    <div id="key-popup" class="modal hidden">
+        <div id="key-popup-overlay" class="modal-overlay"></div>
+        <div id="key-popup-content" class="modal-content">
+            <button id="key-popup-close" class="modal-close-btn">&times;</button>
+            <h2>Select Key Signature</h2>
+            <div id="key-selection-area">
+                <!-- Radial menu will be rendered here by key_selector.js -->
+                <p>Key selection interface goes here...</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Link to JavaScript files will go here -->
     <script src="app.js" type="module"></script>
 </body>

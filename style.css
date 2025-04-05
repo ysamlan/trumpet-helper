@@ -229,3 +229,86 @@ footer {
     font-family: 'Times New Roman', serif; /* Example: Start with a common serif font */
     /* font-style: normal !important; */ /* Usually not needed if font has upright glyph */
 }
+
+/* --- General Control Button Styling --- */
+.control-button {
+    padding: 0.5em 1em;
+    margin-left: 1rem; /* Space it from the accidental controls */
+    font-size: 0.9rem;
+    background-color: #e0e0e0;
+    border: 1px solid #a0a0a0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.control-button:hover {
+    background-color: #d0d0d0;
+}
+
+/* --- Key Signature Modal Styling --- */
+.modal {
+    position: fixed; /* Stay in place */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000; /* Sit on top */
+    display: flex; /* Use flexbox for centering */
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.hidden {
+    display: none; /* Hide by default */
+}
+
+.modal-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+}
+
+.modal-content {
+    position: relative; /* For positioning the close button */
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1001; /* Above overlay */
+    min-width: 300px; /* Minimum width */
+    max-width: 90%; /* Maximum width */
+    max-height: 90vh; /* Maximum height */
+    overflow-y: auto; /* Allow scrolling if content is too tall */
+    text-align: center;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.modal-close-btn:hover {
+    color: #333;
+}
+
+#key-selection-area {
+    margin-top: 1rem;
+    min-height: 200px; /* Placeholder height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px dashed #ccc; /* Placeholder border */
+}

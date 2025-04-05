@@ -44,9 +44,9 @@
 * [X] **4.5:** Modify `staff.js` `mousedown` note calculation logic to prioritize `selectedAccidental` over key signature rules when determining the final `noteName`.
 * [X] **4.6:** Implement display of accidental symbol (`#placed-accidental` SVG text) next to `#placed-note` in `staff.js` `mousedown` handler, based on whether the final note required an explicit or key-signature accidental (including naturals overriding key sig).
 * [X] **4.7:** Call `setSelectedAccidental(null)` and `resetAccidentalButtons()` at the end of the `staff.js` `mousedown` handler.
-* [ ] **4.8:** Add "Change Key" button (`#change-key-btn`) and modal HTML (`#key-popup`, overlay, content area, close button) to `index.html`.
-* [ ] **4.8:** Add CSS for basic modal show/hide functionality (`.hidden` class) and styling.
-* [ ] **4.8:** Add JS in `app.js` to handle showing/hiding the key popup via button/close/overlay clicks. Add `updateChangeKeyButtonText`.
+* [X] **4.8:** Add "Change Key" button (`#change-key-btn`) and modal HTML (`#key-popup`, overlay, content area, close button) to `index.html`.
+* [X] **4.8:** Add CSS for basic modal show/hide functionality (`.hidden` class) and styling.
+* [X] **4.8:** Add JS in `app.js` to handle showing/hiding the key popup via button/close/overlay clicks. Add `updateChangeKeyButtonText`.
 * [ ] **4.9:** Create `key_selector.js` with `renderRadialMenu(containerId, mode, callback)` function to dynamically create radial key options (buttons with `data-keyname`) and central toggle button inside `#key-selection-area`.
 * [ ] **4.9:** Add CSS for radial layout and button styling within the popup.
 * [ ] **4.10:** Implement `handleKeySelection(keyName)` in `app.js` (updates state, updates main staff sig, updates button text, hides popup). Wire it as the callback in `renderRadialMenu`. Add logic to toggle button in `key_selector.js` to re-render menu with opposite mode. Call `renderRadialMenu` when popup is shown.
