@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * Manages UI controls like accidental buttons.
+ * Manages UI controls like accidental buttons and alternate fingering buttons.
  */
 
 const ACCIDENTAL_NATURAL = "\u266E";
