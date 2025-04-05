@@ -61,3 +61,9 @@
 * [ ] **5.5:** Add media queries and CSS rules in `style.css` to handle responsive layout (stacking staff/trumpet areas on narrow screens). Adjust widths, spacing, font sizes as needed.
 * [ ] **5.6:** Perform final accessibility review: Add `aria-label`s where needed, check color contrasts, verify valve numbers are clear, test basic keyboard navigation. (Optional: Implement `aria-live` region for announcements).
 
+## Phase 6: Deploy
+
+* [ ] Create github actions to deploy to github pages for the repo, including minifying code.
+* [ ] Add readme links to the deployed version of the app, and github repo links from the webapp.
+* [ ] Add readme and bottom-of-app links to https://www.svgrepo.com/svg/190518/trumpet (source of our trumpet icon) and to https://github.com/nbrosowsky/tonejs-instruments
+* [ ] Add readme and license file - make this MIT license.
