@@ -1,12 +1,14 @@
 import { renderStaff, displayKeySignature } from './staff.js';
 import { renderTrumpetSVG } from './trumpet.js';
 import { initAudio } from './audio.js';
-import { initAccidentalControls, resetAccidentalButtons } from './controls.js'; // Import controls
+import { initAccidentalControls, resetAccidentalButtons } from './controls.js';
 import { keySignatures } from './data.js';
+import { renderRadialMenu } from './key_selector.js'; // Import key selector
 
 // --- Application State ---
 let currentKeySignature = "C Major"; // Default key signature
 let selectedAccidental = null; // 'natural', 'sharp', 'flat', or null
+let keySelectorMode = 'sharps'; // 'sharps' or 'flats' for the radial menu
 
 /**
  * Gets the currently selected key signature name.
@@ -73,6 +75,26 @@ function handleAccidentalSelection(accidentalType) {
 }
 
 /**
+ * Handles the selection of a key signature from the radial menu.
+ * @param {string} keyName - The selected key signature name (e.g., "G Major").
+ */
+function handleKeySelection(keyName) {
+    console.log(`[App] Key selected via modal: ${keyName}`);
+    setCurrentKeySignature(keyName);
+    hideKeyPopup();
+}
+
+/**
+ * Toggles the display mode (sharps/flats) of the key signature selector.
+ */
+function toggleKeySelectorMode() {
+    keySelectorMode = (keySelectorMode === 'sharps') ? 'flats' : 'sharps';
+    console.log(`[App] Toggling key selector mode to: ${keySelectorMode}`);
+    // Re-render the menu with the new mode
+    renderRadialMenu('key-selection-area', keySelectorMode, handleKeySelection, toggleKeySelectorMode);
+}
+
+/**
  * Updates the text of the "Change Key" button.
  */
 function updateChangeKeyButtonText() {
@@ -90,7 +112,8 @@ function showKeyPopup() {
     if (popup) {
         popup.classList.remove('hidden');
         console.log("Key signature popup shown.");
-        // Future: Call renderRadialMenu here (Task 4.10)
+        // Render the radial menu when the popup is shown
+        renderRadialMenu('key-selection-area', keySelectorMode, handleKeySelection, toggleKeySelectorMode);
     }
 }
 
