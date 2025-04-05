@@ -287,7 +287,7 @@ footer {
 }
 
 .modal-content h2 {
-    margin-bottom: 1rem; /* Add space below the title */
+    margin-bottom: 2rem; /* Increase space below the title */
 }
 
 .modal-close-btn {

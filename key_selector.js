@@ -5,7 +5,7 @@
 
 import { keySignatures } from './data.js';
 
-const RADIUS = 120; // Radius of the circle for key buttons
+const RADIUS = 100; // Reduced radius to bring buttons closer
 const CENTER_X = 150; // Center X of the container (relative)
 const CENTER_Y = 110; // Center Y of the container (relative)
 const BUTTON_RADIUS = 25; // Radius of each key button
