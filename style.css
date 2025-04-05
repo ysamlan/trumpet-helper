@@ -85,7 +85,7 @@ main {
     } */
      #staff-area { order: 1; }
      #controls-area { order: 2; min-height: auto; /* Allow controls height to shrink */}
-     #trumpet-area { order: 3; /* Remove max-height constraint */ }
+     #trumpet-area { order: 3; min-height: 200px; /* Ensure minimum height */ }
      #fingering-options-area { order: 4; }
 }
 
