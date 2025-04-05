@@ -1,4 +1,4 @@
-import { renderStaff } from './staff.js';
+import { renderStaff, displayKeySignature } from './staff.js'; // Import displayKeySignature
 import { renderTrumpetSVG } from './trumpet.js';
 import { initAudio } from './audio.js';
 // Future imports will go here (e.g., controls)
@@ -23,7 +23,15 @@ export function setCurrentKeySignature(keyName) {
     if (keySignatures[keyName]) {
         currentKeySignature = keyName;
         console.log(`Key signature set to: ${currentKeySignature}`);
-        // Future: Update key signature display on staff (Task 4.3)
+
+        // Update key signature display on staff
+        const staffSvg = document.getElementById('staff-area')?.querySelector('svg');
+        if (staffSvg) {
+            displayKeySignature(currentKeySignature, staffSvg);
+        } else {
+            console.warn("Could not find staff SVG to update key signature display.");
+        }
+
         // Future: Update change key button text (Task 4.8)
     } else {
         console.warn(`Attempted to set invalid key signature: ${keyName}`);

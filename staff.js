@@ -16,6 +16,17 @@ const CURSOR_COLOR = "rgba(50, 50, 200, 0.6)"; // Semi-transparent blue
 const PLACED_NOTE_COLOR = "#666666"; // Lighter gray for placed note
 const NOTE_HEAD_RX = LINE_SPACING / 2.2; // Horizontal radius for ellipse note head
 const NOTE_HEAD_RY = LINE_SPACING / 2.8; // Vertical radius for ellipse note head
+const ACCIDENTAL_SHARP = "\u266F"; // Unicode sharp symbol
+const ACCIDENTAL_FLAT = "\u266D"; // Unicode flat symbol
+const ACCIDENTAL_NATURAL = "\u266E"; // Unicode natural symbol (for later use)
+const KEY_SIGNATURE_START_X = CLEF_X + 35; // X position for the first accidental
+const KEY_SIGNATURE_SPACING = 10; // Horizontal space between accidentals
+const ACCIDENTAL_FONT_SIZE = 28; // Font size for accidentals
+
+// --- Standard Y positions for key signature accidentals (Treble Clef) ---
+// Based on the note letter they affect. Maps letter => step relative to F5 (Y=0)
+const SHARP_POSITIONS = Object.freeze({ F: 0, C: 3, G: -1, D: 2, A: 5, E: 1, B: 4 }); // F#, C#, G#, D#, A#, E#, B#
+const FLAT_POSITIONS = Object.freeze({ B: 4, E: 1, A: 5, D: 2, G: 6, C: 3, F: 7 });   // Bb, Eb, Ab, Db, Gb, Cb, Fb
 
 // --- Imports for Interaction ---
 import { getFingering, keySignatures } from './data.js'; // Import keySignatures
@@ -588,4 +599,65 @@ export function renderStaff(containerId) {
 
 
     console.log(`Staff rendered in #${containerId}`);
+
+    // Display initial key signature (default is C Major)
+    displayKeySignature(getCurrentKeySignature(), svg);
+}
+
+/**
+ * Draws or clears the key signature accidentals on the staff.
+ * @param {string} keyName - The name of the key signature (e.g., "G Major").
+ * @param {SVGSVGElement} svg - The SVG element containing the staff.
+ */
+export function displayKeySignature(keyName, svg) {
+    const keyInfo = keySignatures[keyName];
+    if (!keyInfo) {
+        console.warn(`Key signature "${keyName}" not found in data.`);
+        return;
+    }
+
+    let group = svg.getElementById("key-signature-group");
+    if (!group) {
+        group = document.createElementNS(SVG_NAMESPACE, "g");
+        group.id = "key-signature-group";
+        // Insert after clef but before notes/cursor etc.
+        const notesGroup = svg.getElementById("notes-group");
+        svg.insertBefore(group, notesGroup);
+    }
+
+    // Clear existing accidentals
+    group.innerHTML = '';
+
+    if (!keyInfo.accidental) {
+        console.log("Displaying key signature: C Major (no accidentals)");
+        return; // C Major has no accidentals
+    }
+
+    const symbol = keyInfo.accidental === '#' ? ACCIDENTAL_SHARP : ACCIDENTAL_FLAT;
+    const positionMap = keyInfo.accidental === '#' ? SHARP_POSITIONS : FLAT_POSITIONS;
+    const affectedNotesOrder = keyInfo.notes; // Assumes notes in keySignatures are in correct visual order
+
+    console.log(`Displaying key signature: ${keyName} (${affectedNotesOrder.length} ${symbol})`);
+
+    affectedNotesOrder.forEach((noteLetter, index) => {
+        const step = positionMap[noteLetter];
+        if (step === undefined) {
+            console.warn(`No standard position defined for accidental on ${noteLetter} in key ${keyName}`);
+            return;
+        }
+
+        const yPos = step * (LINE_SPACING / 2); // Calculate Y based on step
+        const xPos = KEY_SIGNATURE_START_X + index * KEY_SIGNATURE_SPACING;
+
+        const accidentalText = document.createElementNS(SVG_NAMESPACE, "text");
+        accidentalText.setAttribute("x", xPos);
+        accidentalText.setAttribute("y", yPos);
+        accidentalText.setAttribute("font-size", `${ACCIDENTAL_FONT_SIZE}px`);
+        accidentalText.setAttribute("fill", STROKE_COLOR);
+        accidentalText.setAttribute("dominant-baseline", "middle"); // Adjust vertical alignment
+        accidentalText.setAttribute("text-anchor", "middle"); // Adjust horizontal alignment
+        accidentalText.textContent = symbol;
+
+        group.appendChild(accidentalText);
+    });
 }
