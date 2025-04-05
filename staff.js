@@ -499,8 +499,16 @@ function handleStaffMouseDown(event, svg) {
         console.log(`[MouseDown] Displayed ${1 + (fingeringInfo.alternates?.length || 0)} fingering options.`);
 
     } else {
-        optionsArea.style.display = 'none'; // Hide area if no fingering info
-        console.log("[MouseDown] No fingering info found, hiding options area.");
+        // No fingering info found
+        updateTrumpetSVG(null); // Reset trumpet diagram
+        optionsArea.innerHTML = ''; // Clear any previous buttons
+        optionsArea.textContent = '???'; // Display placeholder
+        optionsArea.style.display = 'flex'; // Make area visible
+        optionsArea.style.justifyContent = 'center'; // Center the '???' text
+        optionsArea.style.alignItems = 'center';
+        optionsArea.style.fontStyle = 'italic';
+        optionsArea.style.color = '#888';
+        console.log("[MouseDown] No fingering info found, displaying '???'");
     }
 
 
