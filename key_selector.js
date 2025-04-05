@@ -70,8 +70,9 @@ export function renderRadialMenu(containerId, mode, keySelectCallback, toggleMod
     // Add central toggle button
     const toggleButton = document.createElement('button');
     toggleButton.id = 'key-mode-toggle';
-    toggleButton.textContent = mode === 'sharps' ? '♭' : '♯'; // Show the *other* mode symbol
-    toggleButton.title = mode === 'sharps' ? 'Show Flat Keys' : 'Show Sharp Keys';
+    // Show the symbol for the CURRENT mode, title describes the action (switch to other mode)
+    toggleButton.textContent = mode === 'sharps' ? '♯' : '♭';
+    toggleButton.title = mode === 'sharps' ? 'Switch to Flat Keys' : 'Switch to Sharp Keys';
     toggleButton.style.left = `${CENTER_X - TOGGLE_BUTTON_SIZE / 2}px`;
     toggleButton.style.top = `${CENTER_Y - TOGGLE_BUTTON_SIZE / 2}px`;
 

@@ -275,7 +275,7 @@ footer {
 .modal-content {
     position: relative; /* For positioning the close button */
     background-color: #fff;
-    padding: 2rem;
+    padding: 3rem 2rem; /* Increased top/bottom padding */
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     z-index: 1001; /* Above overlay */
