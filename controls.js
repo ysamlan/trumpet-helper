@@ -58,5 +58,42 @@ export function resetAccidentalButtons() {
 
     const buttons = container.querySelectorAll('button');
     buttons.forEach(btn => btn.classList.remove('active'));
-    console.log("Accidental buttons reset.");
+    // console.log("Accidental buttons reset."); // Less verbose logging
+}
+
+/**
+ * Initializes the alternate fingering selection buttons.
+ * Uses event delegation on the container.
+ */
+export function initAlternateFingeringControls() {
+    const container = document.getElementById('fingering-options-area');
+    if (!container) {
+        console.error("Fingering options container #fingering-options-area not found.");
+        return;
+    }
+
+    container.addEventListener('click', (event) => {
+        const button = event.target.closest('.fingering-option-btn');
+        if (!button) {
+            return; // Click wasn't on a fingering button
+        }
+
+        // Remove active class from all buttons in this container
+        const allButtons = container.querySelectorAll('.fingering-option-btn');
+        allButtons.forEach(btn => btn.classList.remove('active'));
+
+        // Add active class to the clicked button
+        button.classList.add('active');
+
+        // Get fingering data and update trumpet SVG
+        try {
+            const fingeringArray = JSON.parse(button.dataset.fingering);
+            console.log(`Alternate fingering selected: ${JSON.stringify(fingeringArray)}`);
+            updateTrumpetSVG(fingeringArray);
+        } catch (e) {
+            console.error("Failed to parse fingering data from button:", e);
+        }
+    });
+
+    console.log("Alternate fingering controls initialized.");
 }

@@ -1,9 +1,9 @@
 import { renderStaff, displayKeySignature } from './staff.js';
 import { renderTrumpetSVG } from './trumpet.js';
 import { initAudio } from './audio.js';
-import { initAccidentalControls, resetAccidentalButtons } from './controls.js';
+import { initAccidentalControls, resetAccidentalButtons, initAlternateFingeringControls } from './controls.js'; // Import alt fingering controls
 import { keySignatures } from './data.js';
-import { renderRadialMenu } from './key_selector.js'; // Import key selector
+import { renderRadialMenu } from './key_selector.js';
 
 // --- Application State ---
 let currentKeySignature = "C Major"; // Default key signature
@@ -154,6 +154,7 @@ async function initializeApp() { // Make async to await SVG rendering
 
     // Initialize Controls
     initAccidentalControls(handleAccidentalSelection);
+    initAlternateFingeringControls(); // Initialize alternate fingering buttons
     updateChangeKeyButtonText(); // Set initial button text
 
     // --- Initialize Modal ---
