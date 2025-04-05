@@ -87,9 +87,8 @@ main {
      #controls-area { order: 2; min-height: auto; /* Allow controls height to shrink */}
      #trumpet-area {
         order: 3;
-        flex-grow: 1; /* Allow trumpet area to take available vertical space */
         min-height: 150px; /* Add a smaller min-height just in case */
-        display: flex; /* Ensure flex for centering SVG if needed */
+        margin-top: 48px;
         align-items: center; /* Center SVG vertically */
         justify-content: center; /* Center SVG horizontally */
      }

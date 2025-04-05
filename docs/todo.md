@@ -63,7 +63,7 @@
 
 ## Phase 6: Deploy
 
-* [ ] Add readme links to the deployed version of the app, and github repo links from the webapp.
+* [ ] Add readme links to the github-pages deployed version of the app, and github repo links from the webapp back to the source.
 * [ ] Add readme and bottom-of-app links to https://www.svgrepo.com/svg/190518/trumpet (source of our trumpet icon) and to https://github.com/nbrosowsky/tonejs-instruments
 * [ ] Add readme and license file - make this MIT license.
 * [ ] Create github actions to deploy to github pages for the repo, including minifying code.
