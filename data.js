@@ -61,8 +61,47 @@ const fingeringData = Object.freeze({
  * @returns {{primary: number[], alternates: number[][]} | null} The fingering object or null if not found.
  */
 export function getFingering(noteName) {
-    return fingeringData[noteName] || null;
+    const normalizedNote = normalizeNoteName(noteName);
+    console.log(`[getFingering] Original: ${noteName}, Normalized: ${normalizedNote}`);
+    return fingeringData[normalizedNote] || null;
 }
+
+/**
+ * Normalizes a note name to its enharmonic equivalent primarily using sharps,
+ * matching the keys used in the fingeringData object.
+ * Handles E#/Fb and B#/Cb edge cases.
+ * @param {string} noteName - The note name to normalize (e.g., "Bb4", "E#4", "Cb5").
+ * @returns {string} The normalized note name (e.g., "A#4", "F4", "B4").
+ */
+function normalizeNoteName(noteName) {
+    if (!noteName || noteName.length < 2) return noteName; // Basic validation
+
+    let note = noteName.slice(0, -1); // e.g., "Bb", "E#", "C"
+    let octave = parseInt(noteName.slice(-1), 10);
+
+    // Standard flat to sharp conversions
+    const flatToSharpMap = {
+        "Bb": "A#",
+        "Eb": "D#",
+        "Ab": "G#",
+        "Db": "C#",
+        "Gb": "F#"
+    };
+
+    if (flatToSharpMap[note]) {
+        return flatToSharpMap[note] + octave;
+    }
+
+    // Handle E#/Fb and B#/Cb cases
+    switch (note) {
+        case "E#": return "F" + octave;
+        case "Fb": return "E" + octave;
+        case "B#": return "C" + (octave + 1);
+        case "Cb": return "B" + (octave - 1);
+        default:   return noteName; // Already sharp or natural (A-G)
+    }
+}
+
 
 /**
  * Key Signature Data.
