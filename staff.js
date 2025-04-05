@@ -21,7 +21,7 @@ const ACCIDENTAL_FLAT = "\u266D"; // Unicode flat symbol
 const ACCIDENTAL_NATURAL = "\u266E"; // Unicode natural symbol (for later use)
 const KEY_SIGNATURE_START_X = CLEF_X + 35; // X position for the first accidental
 const KEY_SIGNATURE_SPACING = 10; // Horizontal space between accidentals
-const ACCIDENTAL_FONT_SIZE = 28; // Font size for key sig and placed accidentals
+const ACCIDENTAL_FONT_SIZE = 22; // Reduced font size for accidentals
 const PLACED_ACCIDENTAL_X_OFFSET = -15; // How far left of the note head center the accidental appears
 
 // --- Standard Y positions for key signature accidentals (Treble Clef) ---
@@ -622,7 +622,7 @@ export function renderStaff(containerId) {
     const placedAccidental = document.createElementNS(SVG_NAMESPACE, "text");
     placedAccidental.id = "placed-accidental";
     placedAccidental.setAttribute("font-size", `${ACCIDENTAL_FONT_SIZE}px`);
-    placedAccidental.setAttribute("fill", STROKE_COLOR); // Same color as note head/lines
+    placedAccidental.setAttribute("fill", PLACED_NOTE_COLOR); // Match placed note color
     placedAccidental.setAttribute("dominant-baseline", "middle");
     placedAccidental.setAttribute("text-anchor", "middle");
     placedAccidental.setAttribute("visibility", "hidden"); // Start hidden
