@@ -36,14 +36,12 @@ export function initAccidentalControls(callback) {
         if (button.classList.contains('active')) {
             button.classList.remove('active');
             newActiveState = false;
-            console.log(`Accidental deselected: ${selectedAccidental}`);
             callback(null); // Notify callback that selection was cleared
         } else {
             // Deactivate any other active button
             resetAccidentalButtons();
             // Activate the clicked button
             button.classList.add('active');
-            console.log(`Accidental selected: ${selectedAccidental}`);
             callback(selectedAccidental); // Notify callback of the new selection
         }
     });
@@ -90,7 +88,6 @@ export function initAlternateFingeringControls() {
         // Get fingering data and update trumpet SVG
         try {
             const fingeringArray = JSON.parse(button.dataset.fingering);
-            console.log(`Alternate fingering selected: ${JSON.stringify(fingeringArray)}`);
             updateTrumpetSVG(fingeringArray);
         } catch (e) {
             console.error("Failed to parse fingering data from button:", e);

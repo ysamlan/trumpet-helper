@@ -62,7 +62,6 @@ const fingeringData = Object.freeze({
  */
 export function getFingering(noteName) {
     const normalizedNote = normalizeNoteName(noteName);
-    console.log(`[getFingering] Original: ${noteName}, Normalized: ${normalizedNote}`);
     return fingeringData[normalizedNote] || null;
 }
 

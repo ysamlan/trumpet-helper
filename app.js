@@ -25,7 +25,6 @@ export function getCurrentKeySignature() {
 export function setCurrentKeySignature(keyName) {
     if (keySignatures[keyName]) {
         currentKeySignature = keyName;
-        console.log(`Key signature set to: ${currentKeySignature}`);
 
         // Update key signature display on staff
         const staffSvg = document.getElementById('staff-area')?.querySelector('svg');
@@ -56,7 +55,6 @@ export function getSelectedAccidental() {
 export function setSelectedAccidental(accidentalType) {
     if (['natural', 'sharp', 'flat', null].includes(accidentalType)) {
         selectedAccidental = accidentalType;
-        console.log(`Selected accidental override set to: ${selectedAccidental}`);
         // Future: Could potentially update cursor appearance here
     } else {
         console.warn(`Attempted to set invalid accidental override: ${accidentalType}`);
@@ -70,7 +68,6 @@ export function setSelectedAccidental(accidentalType) {
  * @param {string | null} accidentalType - 'natural', 'sharp', 'flat', or null if deselected.
  */
 function handleAccidentalSelection(accidentalType) {
-    console.log(`[App] Accidental selected via controls: ${accidentalType}`);
     setSelectedAccidental(accidentalType);
 }
 
@@ -79,7 +76,6 @@ function handleAccidentalSelection(accidentalType) {
  * @param {string} keyName - The selected key signature name (e.g., "G Major").
  */
 function handleKeySelection(keyName) {
-    console.log(`[App] Key selected via modal: ${keyName}`);
     setCurrentKeySignature(keyName);
     hideKeyPopup();
 }
@@ -89,7 +85,6 @@ function handleKeySelection(keyName) {
  */
 function toggleKeySelectorMode() {
     keySelectorMode = (keySelectorMode === 'sharps') ? 'flats' : 'sharps';
-    console.log(`[App] Toggling key selector mode to: ${keySelectorMode}`);
     // Re-render the menu with the new mode
     renderRadialMenu('key-selection-area', keySelectorMode, handleKeySelection, toggleKeySelectorMode);
 }
@@ -111,7 +106,6 @@ function showKeyPopup() {
     const popup = document.getElementById('key-popup');
     if (popup) {
         popup.classList.remove('hidden');
-        console.log("Key signature popup shown.");
         // Render the radial menu when the popup is shown
         renderRadialMenu('key-selection-area', keySelectorMode, handleKeySelection, toggleKeySelectorMode);
     }
@@ -124,7 +118,6 @@ function hideKeyPopup() {
     const popup = document.getElementById('key-popup');
     if (popup) {
         popup.classList.add('hidden');
-        console.log("Key signature popup hidden.");
     }
 }
 

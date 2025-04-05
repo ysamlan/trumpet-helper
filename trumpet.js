@@ -56,11 +56,6 @@ export async function renderTrumpetSVG(containerId, svgPath = 'trumpet.svg') {
             if (valveCapPaths[1]) valveCapPaths[1].id = 'valve-cap-1';
             if (valveCapPaths[0]) valveCapPaths[0].id = 'valve-cap-2';
             if (valveCapPaths[2]) valveCapPaths[2].id = 'valve-cap-3';
-            console.log("Assigned IDs to valve caps:", {
-                cap1: valveCapPaths[1]?.id,
-                cap2: valveCapPaths[0]?.id,
-                cap3: valveCapPaths[2]?.id
-            });
         }
 
         // Adjust SVG attributes for embedding
@@ -113,7 +108,6 @@ export function updateTrumpetSVG(fingeringArray) {
             valveCap.setAttribute("transform", VALVE_DOWN_TRANSFORM);
             // Add highlight class
             valveCap.classList.add(`valve-pressed-${i}`);
-            console.log(`Valve ${i} pressed.`);
 
             // Add valve number text if it doesn't exist
             const textId = `valve-number-${i}`;
@@ -145,7 +139,6 @@ export function updateTrumpetSVG(fingeringArray) {
             valveCap.removeAttribute("transform");
             // Remove highlight class
             valveCap.classList.remove(`valve-pressed-${i}`);
-            console.log(`Valve ${i} released.`);
 
             // Remove valve number text if it exists
             const textId = `valve-number-${i}`;

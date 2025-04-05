@@ -182,7 +182,6 @@ function getVerticalPositionInfo(yCoord) {
     // Calculate position relative to the top line (E5 = Y=0), rounding to nearest half-step (line or space)
     const position = Math.round(yCoord / halfSpacing);
     const snappedY = position * halfSpacing;
-    // console.log(`Raw Y: ${yCoord.toFixed(2)}, Snapped Y: ${snappedY}`); // Removed noisy log
 
     let ledgerLinesNeeded = 0;
     const topStaffLineY = 0;
@@ -218,11 +217,9 @@ function getVerticalPositionInfo(yCoord) {
         // ledgerLinesNeeded remains 0 if the condition isn't met.
     }
 
-    // console.log(`Calculated ledgerLinesNeeded (before clamp): ${ledgerLinesNeeded}`); // Removed noisy log
 
     // Clamp ledger lines
     const clampedLedgerLines = Math.max(-MAX_LEDGER_LINES, Math.min(MAX_LEDGER_LINES, ledgerLinesNeeded));
-    // console.log(`Clamped ledgerLinesNeeded: ${clampedLedgerLines}`); // Removed noisy log
 
     return { snappedY, ledgerLinesNeeded: clampedLedgerLines };
 }
@@ -241,7 +238,6 @@ function getNoteFromPosition(snappedY) {
     const halfSpacing = LINE_SPACING / 2;
     const stepCalculation = snappedY / halfSpacing;
     const step = Math.round(stepCalculation); // Calculate step relative to F5 (step 0)
-    console.log(`[getNoteFromPosition] Input snappedY: ${snappedY}, Rounded Step: ${step}`);
 
     const naturalNoteName = STEP_TO_NOTE_MAP[step]; // e.g., "F5", "C4"
 
@@ -259,46 +255,38 @@ function getNoteFromPosition(snappedY) {
 
     // --- Check for Accidental Override ---
     const selectedOverride = getSelectedAccidental(); // 'natural', 'sharp', 'flat', or null
-    console.log(`[getNoteFromPosition] Selected Accidental Override: ${selectedOverride}`);
 
     if (selectedOverride) {
         switch (selectedOverride) {
             case 'natural':
                 finalNoteName = naturalNoteName; // Use the natural note regardless of key sig
                 accidentalApplied = null; // Final note is natural
-                console.log(`[getNoteFromPosition] Applying override: Natural -> ${finalNoteName}`);
                 break;
             case 'sharp':
                 accidentalApplied = '#';
                 finalNoteName = baseNote + accidentalApplied + octave;
-                console.log(`[getNoteFromPosition] Applying override: Sharp -> ${finalNoteName}`);
                 break;
             case 'flat':
                 accidentalApplied = 'b';
                 finalNoteName = baseNote + accidentalApplied + octave;
-                console.log(`[getNoteFromPosition] Applying override: Flat -> ${finalNoteName}`);
                 break;
         }
     } else {
         // --- No Override: Apply Key Signature ---
         const currentKey = getCurrentKeySignature(); // e.g., "G Major"
         const keyInfo = keySignatures[currentKey];
-        console.log(`[getNoteFromPosition] No override. Checking key sig (${currentKey}) for ${baseNote}`);
 
         if (keyInfo && keyInfo.accidental && keyInfo.notes.includes(baseNote)) {
             accidentalApplied = keyInfo.accidental; // '#' or 'b'
             finalNoteName = baseNote + accidentalApplied + octave; // e.g., "F#5"
-            console.log(`[getNoteFromPosition] Applying key sig: ${naturalNoteName} -> ${finalNoteName}`);
         } else {
             // Note is natural according to key signature
             accidentalApplied = null;
             finalNoteName = naturalNoteName;
-            console.log(`[getNoteFromPosition] No key sig modification needed for ${naturalNoteName} in ${currentKey}`);
         }
     }
 
     const noteInfo = { baseNote, octave, accidentalApplied, noteName: finalNoteName };
-    console.log(`[getNoteFromPosition] Result:`, noteInfo);
     return noteInfo;
 }
 
@@ -321,7 +309,6 @@ function updateLedgerLines(svg, group, ledgerLinesNeeded, snappedY, cursorX) {
 
     if (ledgerLinesNeeded < 0) { // Lines above staff
         const numLines = Math.abs(ledgerLinesNeeded);
-        // console.log(`Drawing ${numLines} ledger lines ABOVE staff (snappedY: ${snappedY}).`); // Keep for debugging if needed
         // Iterate from the first ledger line above (Y = -LINE_SPACING) up to the required number.
         for (let i = 1; i <= numLines; i++) {
             const lineY = -i * LINE_SPACING;
@@ -337,7 +324,6 @@ function updateLedgerLines(svg, group, ledgerLinesNeeded, snappedY, cursorX) {
         }
     } else if (ledgerLinesNeeded > 0) { // Lines below staff
         const numLines = ledgerLinesNeeded;
-        // console.log(`Drawing ${numLines} ledger lines BELOW staff (snappedY: ${snappedY}).`); // Keep for debugging if needed
         const bottomStaffLineY = (STAFF_LINES - 1) * LINE_SPACING; // Y position of the lowest staff line (F4)
         // Iterate from the first ledger line below (Y = bottomStaffLineY + LINE_SPACING) down to the required number.
         for (let i = 1; i <= numLines; i++) {
@@ -365,9 +351,7 @@ function handleStaffMouseMove(event, svg) {
     const viewBoxWidth = parseFloat(svg.getAttribute("viewBox").split(' ')[2]);
     const cursorX = Math.max(STAFF_START_X + CURSOR_RADIUS + LEDGER_LINE_EXTENSION, Math.min(coords.x, viewBoxWidth - STAFF_END_X_MARGIN - CURSOR_RADIUS - LEDGER_LINE_EXTENSION));
 
-
     const { snappedY, ledgerLinesNeeded } = getVerticalPositionInfo(coords.y);
-    // console.log(`[MouseMove] Vertical Info: snappedY=${snappedY}, ledgerLinesNeeded=${ledgerLinesNeeded}`); // Removed noisy log
 
     // Update Cursor
     const cursorIndicator = svg.getElementById("cursor-indicator");
@@ -396,19 +380,14 @@ function handleStaffMouseLeave(event, svg) {
     if (ledgerLinesGroup) {
         ledgerLinesGroup.innerHTML = ''; // Clear lines
     }
-    // console.log("Mouse Leave Staff"); // Removed noisy log
 }
 
 function handleStaffMouseDown(event, svg) {
     const coords = getSVGCoordinates(svg, event);
     const { snappedY } = getVerticalPositionInfo(coords.y); // Get snapped Y for note calculation
-    console.log(`[MouseDown] Coords: x=${coords.x.toFixed(2)}, y=${coords.y.toFixed(2)}`);
-    console.log(`[MouseDown] Calculated Snapped Y for Note: ${snappedY}`);
 
     const noteInfo = getNoteFromPosition(snappedY); // Get the detailed note info object
     const noteName = noteInfo ? noteInfo.noteName : null; // Extract the final note name for use below
-
-    console.log(`[MouseDown] Final Calculated Note: ${noteName || 'Out of range'}`);
 
     // --- Display Placed Note ---
     const placedNoteElement = svg.getElementById("placed-note");
@@ -426,11 +405,9 @@ function handleStaffMouseDown(event, svg) {
             // Optional: Adjust rotation center if rotating
             // placedNoteElement.setAttribute("transform", `rotate(-15 ${cursorX} ${snappedY})`);
             placedNoteElement.setAttribute("visibility", "visible");
-            console.log(`[MouseDown] Displaying placed note at x=${cursorX.toFixed(2)}, y=${snappedY}`);
         } else {
             // Hide the note if the click was out of range
             placedNoteElement.setAttribute("visibility", "hidden");
-            console.log(`[MouseDown] Hiding placed note (click out of range)`);
         }
     }
 
@@ -458,10 +435,8 @@ function handleStaffMouseDown(event, svg) {
             placedAccidentalElement.setAttribute("x", noteCx + PLACED_ACCIDENTAL_X_OFFSET);
             placedAccidentalElement.setAttribute("y", noteCy); // Vertically align with note center
             placedAccidentalElement.setAttribute("visibility", "visible");
-            console.log(`[MouseDown] Displaying placed accidental: ${symbolToShow}`);
         } else {
             placedAccidentalElement.setAttribute("visibility", "hidden");
-            // console.log(`[MouseDown] Hiding placed accidental.`);
         }
     }
 
@@ -469,8 +444,6 @@ function handleStaffMouseDown(event, svg) {
     // --- Update Trumpet Fingering Display ---
     const fingeringInfo = noteName ? getFingering(noteName) : null;
     const primaryFingering = fingeringInfo ? fingeringInfo.primary : null;
-    console.log(`[MouseDown] Fingering Info:`, fingeringInfo);
-    console.log(`[MouseDown] Calling updateTrumpetSVG with:`, primaryFingering);
     updateTrumpetSVG(primaryFingering); // Update trumpet visual
 
     // --- Display Alternate Fingerings ---
@@ -496,7 +469,6 @@ function handleStaffMouseDown(event, svg) {
                 optionsArea.appendChild(altBtn);
             });
         }
-        console.log(`[MouseDown] Displayed ${1 + (fingeringInfo.alternates?.length || 0)} fingering options.`);
 
     } else {
         // No fingering info found
@@ -520,10 +492,8 @@ function handleStaffMouseDown(event, svg) {
 
     // --- Stop previous note & Cancel its pending release before starting a new note ---
     if (releaseTimeoutId) {
-        console.log(`[MouseDown] Found active release timer ID: ${releaseTimeoutId} for note ${noteScheduledForRelease}`);
         if (noteScheduledForRelease && sampler) {
             // Immediately release the note that was scheduled to be released
-            console.log(`[MouseDown] => Calling sampler.triggerRelease(${noteScheduledForRelease}) NOW.`);
             try {
                 sampler.triggerRelease(noteScheduledForRelease);
             } catch (error) {
@@ -534,14 +504,12 @@ function handleStaffMouseDown(event, svg) {
         }
         // Now clear the timer associated with it
         clearTimeout(releaseTimeoutId);
-        console.log(`[MouseDown] Cleared timeout ID: ${releaseTimeoutId}`);
         releaseTimeoutId = null;
         noteScheduledForRelease = null; // Clear the scheduled note tracker
     }
 
 
     if (noteName && sampler) {
-        console.log(`[MouseDown] Triggering audio attack for: ${noteName}`);
         try {
             // Optional: Immediately release any note currently under the mouse if different
             // if (noteUnderMouse && noteUnderMouse !== noteName) {
@@ -570,13 +538,11 @@ function handleStaffMouseDown(event, svg) {
     // Reset the state and the button UI after the click action is complete
     setSelectedAccidental(null);
     resetAccidentalButtons();
-    console.log("[MouseDown] Accidental override reset.");
 }
 
 function handleStaffMouseUp(event, svg) {
     // We don't necessarily need coordinates for mouseup action itself
     // const coords = getSVGCoordinates(svg, event);
-    // console.log(`Mouse Up detected (global listener).`); // Removed noisy log
 
     // --- Schedule Delayed Stop Audio ---
     const sampler = getSampler();
@@ -591,17 +557,14 @@ function handleStaffMouseUp(event, svg) {
         }
 
         noteScheduledForRelease = noteToRelease; // Track the note whose release is now scheduled
-        console.log(`[MouseUp] Scheduling release for: ${noteScheduledForRelease} in 500ms`);
 
         releaseTimeoutId = setTimeout(() => {
             const executedTimerId = releaseTimeoutId; // Capture ID at execution time
             const releasedNote = noteScheduledForRelease; // Capture note at execution time
 
-            console.log(`[Timeout Callback] Executing for timer ID: ${executedTimerId}. Releasing note: ${releasedNote}`);
             if (releasedNote && sampler) {
                 try {
                     sampler.triggerRelease(releasedNote);
-                    console.log(`[Timeout Callback] Called sampler.triggerRelease(${releasedNote})`);
                 } catch (error) {
                     console.error(`[Timeout Callback] Error in delayed release for note ${releasedNote}:`, error);
                 }
@@ -614,23 +577,14 @@ function handleStaffMouseUp(event, svg) {
             if (releaseTimeoutId === executedTimerId) {
                 releaseTimeoutId = null;
                 noteScheduledForRelease = null;
-                console.log(`[Timeout Callback] Cleared releaseTimeoutId and noteScheduledForRelease.`);
             } else {
                  console.warn(`[Timeout Callback] releaseTimeoutId (${releaseTimeoutId}) does not match this timer's ID (${executedTimerId}). Not clearing.`);
             }
         }, 500); // 500ms delay
 
-        console.log(`[MouseUp] Scheduled timer ID: ${releaseTimeoutId} for note ${noteScheduledForRelease}`);
         noteUnderMouse = null; // Clear the note-under-mouse tracker immediately
 
-    } else if (sampler && !noteUnderMouse) {
-        // Mouseup happened, but no note was actively tracked from mousedown
-        // Or a release is already scheduled. Do nothing extra.
-        // Optional: Could call sampler.triggerRelease() here as a fallback,
-        // but let's stick to releasing only the tracked note for now.
-        console.log("[MouseUp] No tracked note to release.");
-    }
-    // If sampler is null, log is handled in getSampler.
+    } 
 }
 
 
@@ -713,9 +667,6 @@ export function renderStaff(containerId) {
     // Add mouseleave to hide cursor/ledger lines
     interactionLayer.addEventListener('mouseleave', (e) => handleStaffMouseLeave(e, svg));
 
-
-    console.log(`Staff rendered in #${containerId}`);
-
     // Display initial key signature (default is C Major)
     displayKeySignature(getCurrentKeySignature(), svg);
 }
@@ -745,15 +696,12 @@ export function displayKeySignature(keyName, svg) {
     group.innerHTML = '';
 
     if (!keyInfo.accidental) {
-        console.log("Displaying key signature: C Major (no accidentals)");
         return; // C Major has no accidentals
     }
 
     const symbol = keyInfo.accidental === '#' ? ACCIDENTAL_SHARP : ACCIDENTAL_FLAT;
     const positionMap = keyInfo.accidental === '#' ? SHARP_POSITIONS : FLAT_POSITIONS;
     const affectedNotesOrder = keyInfo.notes; // Assumes notes in keySignatures are in correct visual order
-
-    console.log(`Displaying key signature: ${keyName} (${affectedNotesOrder.length} ${symbol})`);
 
     affectedNotesOrder.forEach((noteLetter, index) => {
         const step = positionMap[noteLetter];

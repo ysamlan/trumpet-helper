@@ -102,5 +102,4 @@ export function renderRadialMenu(containerId, mode, keySelectCallback, toggleMod
 
     container.appendChild(toggleButton);
 
-    console.log(`Rendered radial menu for ${mode} keys.`);
 }
