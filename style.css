@@ -306,9 +306,66 @@ footer {
 
 #key-selection-area {
     margin-top: 1rem;
-    min-height: 200px; /* Placeholder height */
+    position: relative; /* For absolute positioning of children */
+    width: 300px; /* Fixed width based on JS constants */
+    height: 220px; /* Fixed height based on JS constants */
+    display: flex; /* Keep flex for centering if needed, but children are absolute */
+    justify-content: center;
+    align-items: center;
+    border: none; /* Remove placeholder border */
+    margin-left: auto; /* Center the area within the modal content */
+    margin-right: auto;
+}
+
+/* Styling for the radial key buttons */
+.key-option-btn {
+    position: absolute;
+    width: 50px; /* Diameter = BUTTON_RADIUS * 2 */
+    height: 50px;
+    border-radius: 50%; /* Make it circular */
+    border: 1px solid #a0a0a0;
+    background-color: #f8f8f8;
+    color: #333;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px dashed #ccc; /* Placeholder border */
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.key-option-btn:hover {
+    background-color: #e8e8e8;
+    border-color: #888;
+}
+
+.key-option-btn:active {
+    transform: scale(0.95);
+}
+
+/* Styling for the central toggle button */
+#key-mode-toggle {
+    position: absolute;
+    width: 60px; /* Matches JS constant */
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #007bff;
+    background-color: #e0f0ff;
+    color: #0056b3;
+    font-size: 1.8rem; /* Larger symbol */
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#key-mode-toggle:hover {
+    background-color: #c0e0ff;
+}
+
+#key-mode-toggle:active {
+    transform: scale(0.95);
 }
