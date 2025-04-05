@@ -40,8 +40,8 @@
 * [X] **4.4:** Add HTML buttons (`#accidental-natural`, etc.) with `data-accidental` attributes to `controls-area`.
 * [X] **4.4:** Add CSS for segmented control appearance and `.active` state for accidental buttons.
 * [X] **4.4:** Create `controls.js` with `initAccidentalControls(callback)` and `resetAccidentalButtons()` functions. Initialize in `app.js`.
-* [ ] **4.5:** Add `selectedAccidental` state management to `app.js` (getter/setter, updated by callback from `initAccidentalControls`).
-* [ ] **4.5:** Modify `staff.js` `mousedown` note calculation logic to prioritize `selectedAccidental` over key signature rules when determining the final `noteName`.
+* [X] **4.5:** Add `selectedAccidental` state management to `app.js` (getter/setter, updated by callback from `initAccidentalControls`).
+* [X] **4.5:** Modify `staff.js` `mousedown` note calculation logic to prioritize `selectedAccidental` over key signature rules when determining the final `noteName`.
 * [ ] **4.6:** Implement display of accidental symbol (`#placed-accidental` SVG text) next to `#placed-note` in `staff.js` `mousedown` handler, based on whether the final note required an explicit or key-signature accidental (including naturals overriding key sig).
 * [ ] **4.7:** Call `setSelectedAccidental(null)` and `resetAccidentalButtons()` at the end of the `staff.js` `mousedown` handler.
 * [ ] **4.8:** Add "Change Key" button (`#change-key-btn`) and modal HTML (`#key-popup`, overlay, content area, close button) to `index.html`.

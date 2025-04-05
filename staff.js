@@ -29,10 +29,10 @@ const SHARP_POSITIONS = Object.freeze({ F: 0, C: 3, G: -1, D: 2, A: 5, E: 1, B: 
 const FLAT_POSITIONS = Object.freeze({ B: 4, E: 1, A: 5, D: 2, G: 6, C: 3, F: 7 });   // Bb, Eb, Ab, Db, Gb, Cb, Fb
 
 // --- Imports for Interaction ---
-import { getFingering, keySignatures } from './data.js'; // Import keySignatures
+import { getFingering, keySignatures } from './data.js';
 import { updateTrumpetSVG } from './trumpet.js';
 import { getSampler } from './audio.js';
-import { getCurrentKeySignature } from './app.js'; // Import key signature state function
+import { getCurrentKeySignature, getSelectedAccidental } from './app.js'; // Import key/accidental state
 
 // --- Module State ---
 let noteUnderMouse = null; // Tracks the note being attacked/held down
@@ -252,20 +252,47 @@ function getNoteFromPosition(snappedY) {
     const baseNote = naturalNoteName.charAt(0); // e.g., 'F'
     const octave = parseInt(naturalNoteName.slice(1), 10); // e.g., 5
 
-    // Get current key signature rules
-    const currentKey = getCurrentKeySignature(); // e.g., "G Major"
-    const keyInfo = keySignatures[currentKey];
-
     let finalNoteName = naturalNoteName;
-    let accidentalApplied = null;
+    let accidentalApplied = null; // Tracks if the *final* note has an accidental relative to natural
 
-    // Apply key signature if applicable
-    if (keyInfo && keyInfo.accidental && keyInfo.notes.includes(baseNote)) {
-        accidentalApplied = keyInfo.accidental; // '#' or 'b'
-        finalNoteName = baseNote + accidentalApplied + octave; // e.g., "F#5"
-        console.log(`[getNoteFromPosition] Applying key sig (${currentKey}): ${naturalNoteName} -> ${finalNoteName}`);
+    // --- Check for Accidental Override ---
+    const selectedOverride = getSelectedAccidental(); // 'natural', 'sharp', 'flat', or null
+    console.log(`[getNoteFromPosition] Selected Accidental Override: ${selectedOverride}`);
+
+    if (selectedOverride) {
+        switch (selectedOverride) {
+            case 'natural':
+                finalNoteName = naturalNoteName; // Use the natural note regardless of key sig
+                accidentalApplied = null; // Final note is natural
+                console.log(`[getNoteFromPosition] Applying override: Natural -> ${finalNoteName}`);
+                break;
+            case 'sharp':
+                accidentalApplied = '#';
+                finalNoteName = baseNote + accidentalApplied + octave;
+                console.log(`[getNoteFromPosition] Applying override: Sharp -> ${finalNoteName}`);
+                break;
+            case 'flat':
+                accidentalApplied = 'b';
+                finalNoteName = baseNote + accidentalApplied + octave;
+                console.log(`[getNoteFromPosition] Applying override: Flat -> ${finalNoteName}`);
+                break;
+        }
     } else {
-        console.log(`[getNoteFromPosition] No key sig modification for ${naturalNoteName} in ${currentKey}`);
+        // --- No Override: Apply Key Signature ---
+        const currentKey = getCurrentKeySignature(); // e.g., "G Major"
+        const keyInfo = keySignatures[currentKey];
+        console.log(`[getNoteFromPosition] No override. Checking key sig (${currentKey}) for ${baseNote}`);
+
+        if (keyInfo && keyInfo.accidental && keyInfo.notes.includes(baseNote)) {
+            accidentalApplied = keyInfo.accidental; // '#' or 'b'
+            finalNoteName = baseNote + accidentalApplied + octave; // e.g., "F#5"
+            console.log(`[getNoteFromPosition] Applying key sig: ${naturalNoteName} -> ${finalNoteName}`);
+        } else {
+            // Note is natural according to key signature
+            accidentalApplied = null;
+            finalNoteName = naturalNoteName;
+            console.log(`[getNoteFromPosition] No key sig modification needed for ${naturalNoteName} in ${currentKey}`);
+        }
     }
 
     const noteInfo = { baseNote, octave, accidentalApplied, noteName: finalNoteName };

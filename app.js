@@ -6,6 +6,7 @@ import { keySignatures } from './data.js';
 
 // --- Application State ---
 let currentKeySignature = "C Major"; // Default key signature
+let selectedAccidental = null; // 'natural', 'sharp', 'flat', or null
 
 /**
  * Gets the currently selected key signature name.
@@ -39,14 +40,36 @@ export function setCurrentKeySignature(keyName) {
 }
 
 /**
+ * Gets the currently selected accidental override.
+ * @returns {string | null} 'natural', 'sharp', 'flat', or null.
+ */
+export function getSelectedAccidental() {
+    return selectedAccidental;
+}
+
+/**
+ * Sets the selected accidental override state.
+ * @param {string | null} accidentalType - 'natural', 'sharp', 'flat', or null.
+ */
+export function setSelectedAccidental(accidentalType) {
+    if (['natural', 'sharp', 'flat', null].includes(accidentalType)) {
+        selectedAccidental = accidentalType;
+        console.log(`Selected accidental override set to: ${selectedAccidental}`);
+        // Future: Could potentially update cursor appearance here
+    } else {
+        console.warn(`Attempted to set invalid accidental override: ${accidentalType}`);
+    }
+}
+
+
+/**
  * Handles the selection of an accidental override.
  * (Will be fully implemented in Task 4.5 to update app state)
  * @param {string | null} accidentalType - 'natural', 'sharp', 'flat', or null if deselected.
  */
 function handleAccidentalSelection(accidentalType) {
     console.log(`[App] Accidental selected via controls: ${accidentalType}`);
-    // TODO (Task 4.5): Update selectedAccidental state here
-    // setSelectedAccidental(accidentalType);
+    setSelectedAccidental(accidentalType);
 }
 
 
