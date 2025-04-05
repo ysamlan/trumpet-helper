@@ -21,7 +21,8 @@ const ACCIDENTAL_FLAT = "\u266D"; // Unicode flat symbol
 const ACCIDENTAL_NATURAL = "\u266E"; // Unicode natural symbol (for later use)
 const KEY_SIGNATURE_START_X = CLEF_X + 35; // X position for the first accidental
 const KEY_SIGNATURE_SPACING = 10; // Horizontal space between accidentals
-const ACCIDENTAL_FONT_SIZE = 28; // Font size for accidentals
+const ACCIDENTAL_FONT_SIZE = 28; // Font size for key sig and placed accidentals
+const PLACED_ACCIDENTAL_X_OFFSET = -15; // How far left of the note head center the accidental appears
 
 // --- Standard Y positions for key signature accidentals (Treble Clef) ---
 // Based on the note letter they affect. Maps letter => step relative to F5 (Y=0)
@@ -432,6 +433,38 @@ function handleStaffMouseDown(event, svg) {
         }
     }
 
+    // --- Display Placed Accidental ---
+    const placedAccidentalElement = svg.getElementById("placed-accidental");
+    if (placedAccidentalElement) {
+        const selectedOverride = getSelectedAccidental();
+        let symbolToShow = null;
+
+        if (selectedOverride === 'natural') {
+            symbolToShow = ACCIDENTAL_NATURAL;
+        } else if (selectedOverride === 'sharp') {
+            symbolToShow = ACCIDENTAL_SHARP;
+        } else if (selectedOverride === 'flat') {
+            symbolToShow = ACCIDENTAL_FLAT;
+        } else if (!selectedOverride && noteInfo && noteInfo.accidentalApplied) {
+            // No override, but key signature caused an accidental
+            symbolToShow = noteInfo.accidentalApplied === '#' ? ACCIDENTAL_SHARP : ACCIDENTAL_FLAT;
+        }
+
+        if (symbolToShow && noteName) {
+            const noteCx = parseFloat(placedNoteElement.getAttribute("cx"));
+            const noteCy = parseFloat(placedNoteElement.getAttribute("cy"));
+            placedAccidentalElement.textContent = symbolToShow;
+            placedAccidentalElement.setAttribute("x", noteCx + PLACED_ACCIDENTAL_X_OFFSET);
+            placedAccidentalElement.setAttribute("y", noteCy); // Vertically align with note center
+            placedAccidentalElement.setAttribute("visibility", "visible");
+            console.log(`[MouseDown] Displaying placed accidental: ${symbolToShow}`);
+        } else {
+            placedAccidentalElement.setAttribute("visibility", "hidden");
+            // console.log(`[MouseDown] Hiding placed accidental.`);
+        }
+    }
+
+
     // --- Update Trumpet Fingering Display ---
     const fingeringInfo = noteName ? getFingering(noteName) : null;
     const primaryFingering = fingeringInfo ? fingeringInfo.primary : null;
@@ -584,6 +617,16 @@ export function renderStaff(containerId) {
     // Add slight rotation for a more traditional note head look
     // placedNote.setAttribute("transform", "rotate(-15)"); // Optional: Requires cx, cy for rotation center
     notesGroup.appendChild(placedNote); // Add to notes group
+
+    // Placed accidental indicator (initially hidden)
+    const placedAccidental = document.createElementNS(SVG_NAMESPACE, "text");
+    placedAccidental.id = "placed-accidental";
+    placedAccidental.setAttribute("font-size", `${ACCIDENTAL_FONT_SIZE}px`);
+    placedAccidental.setAttribute("fill", STROKE_COLOR); // Same color as note head/lines
+    placedAccidental.setAttribute("dominant-baseline", "middle");
+    placedAccidental.setAttribute("text-anchor", "middle");
+    placedAccidental.setAttribute("visibility", "hidden"); // Start hidden
+    notesGroup.appendChild(placedAccidental);
 
     // Group for ledger lines
     const ledgerLinesGroup = document.createElementNS(SVG_NAMESPACE, "g");
