@@ -18,9 +18,10 @@ const NOTE_HEAD_RX = LINE_SPACING / 2.2; // Horizontal radius for ellipse note h
 const NOTE_HEAD_RY = LINE_SPACING / 2.8; // Vertical radius for ellipse note head
 
 // --- Imports for Interaction ---
-import { getFingering } from './data.js';
+import { getFingering, keySignatures } from './data.js'; // Import keySignatures
 import { updateTrumpetSVG } from './trumpet.js';
-import { getSampler } from './audio.js'; // Removed ensureAudioContextStarted
+import { getSampler } from './audio.js';
+import { getCurrentKeySignature } from './app.js'; // Import key signature state function
 
 // --- Module State ---
 let noteUnderMouse = null; // Tracks the note being attacked/held down
@@ -214,30 +215,51 @@ function getVerticalPositionInfo(yCoord) {
 }
 
 /**
- * Calculates the note name (pitch and octave) based on the snapped Y position.
- * Assumes C Major key signature initially.
+ * Calculates the note name based on the snapped Y position and the current key signature.
  * @param {number} snappedY - The Y coordinate snapped to the nearest line or space.
- * @returns {string | null} The note name (e.g., "C4", "F#5") or null if position is out of range.
+ * @returns {{baseNote: string, octave: number, accidentalApplied: string|null, noteName: string} | null}
+ *          An object with note details, or null if position is out of range.
+ *          - baseNote: The natural letter name (A-G).
+ *          - octave: The octave number.
+ *          - accidentalApplied: '#', 'b', or null based on key signature.
+ *          - noteName: The final note name including accidental and octave (e.g., "F#5").
  */
 function getNoteFromPosition(snappedY) {
     const halfSpacing = LINE_SPACING / 2;
     const stepCalculation = snappedY / halfSpacing;
-    const step = Math.round(stepCalculation); // Calculate step relative to E5 (step 0)
-    console.log(`[getNoteFromPosition] Input snappedY: ${snappedY}`);
-    console.log(`[getNoteFromPosition] halfSpacing: ${halfSpacing}`);
-    console.log(`[getNoteFromPosition] Raw Step Calc (snappedY / halfSpacing): ${stepCalculation}`);
-    console.log(`[getNoteFromPosition] Rounded Step: ${step}`);
+    const step = Math.round(stepCalculation); // Calculate step relative to F5 (step 0)
+    console.log(`[getNoteFromPosition] Input snappedY: ${snappedY}, Rounded Step: ${step}`);
 
-    const noteName = STEP_TO_NOTE_MAP[step];
-    console.log(`[getNoteFromPosition] Looked up Note Name: ${noteName || 'Not Found in Map'}`);
+    const naturalNoteName = STEP_TO_NOTE_MAP[step]; // e.g., "F5", "C4"
 
-    if (noteName) {
-        // console.log(`Snapped Y: ${snappedY}, Step: ${step} -> Note: ${noteName}`); // Original log, now redundant
-        return noteName;
-    } else {
-        console.warn(`[getNoteFromPosition] No note defined for Step: ${step} (Snapped Y: ${snappedY})`);
+    if (!naturalNoteName) {
+        console.warn(`[getNoteFromPosition] No natural note defined for Step: ${step} (Snapped Y: ${snappedY})`);
         return null; // Position is outside the defined range
     }
+
+    // Parse the natural note name
+    const baseNote = naturalNoteName.charAt(0); // e.g., 'F'
+    const octave = parseInt(naturalNoteName.slice(1), 10); // e.g., 5
+
+    // Get current key signature rules
+    const currentKey = getCurrentKeySignature(); // e.g., "G Major"
+    const keyInfo = keySignatures[currentKey];
+
+    let finalNoteName = naturalNoteName;
+    let accidentalApplied = null;
+
+    // Apply key signature if applicable
+    if (keyInfo && keyInfo.accidental && keyInfo.notes.includes(baseNote)) {
+        accidentalApplied = keyInfo.accidental; // '#' or 'b'
+        finalNoteName = baseNote + accidentalApplied + octave; // e.g., "F#5"
+        console.log(`[getNoteFromPosition] Applying key sig (${currentKey}): ${naturalNoteName} -> ${finalNoteName}`);
+    } else {
+        console.log(`[getNoteFromPosition] No key sig modification for ${naturalNoteName} in ${currentKey}`);
+    }
+
+    const noteInfo = { baseNote, octave, accidentalApplied, noteName: finalNoteName };
+    console.log(`[getNoteFromPosition] Result:`, noteInfo);
+    return noteInfo;
 }
 
 
@@ -341,11 +363,12 @@ function handleStaffMouseDown(event, svg) {
     const coords = getSVGCoordinates(svg, event);
     const { snappedY } = getVerticalPositionInfo(coords.y); // Get snapped Y for note calculation
     console.log(`[MouseDown] Coords: x=${coords.x.toFixed(2)}, y=${coords.y.toFixed(2)}`);
-    console.log(`[MouseDown] Calculated Snapped Y for Note: ${snappedY}`); // Log the snappedY being passed
+    console.log(`[MouseDown] Calculated Snapped Y for Note: ${snappedY}`);
 
-    const noteName = getNoteFromPosition(snappedY); // Call the function
+    const noteInfo = getNoteFromPosition(snappedY); // Get the detailed note info object
+    const noteName = noteInfo ? noteInfo.noteName : null; // Extract the final note name for use below
 
-    console.log(`[MouseDown] Final Result: Note Name = ${noteName || 'Out of range'}`); // Log the final result
+    console.log(`[MouseDown] Final Calculated Note: ${noteName || 'Out of range'}`);
 
     // --- Display Placed Note ---
     const placedNoteElement = svg.getElementById("placed-note");

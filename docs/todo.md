@@ -32,9 +32,9 @@
 ## Phase 4: Key Signatures & Accidentals
 
 * [X] **4.1:** Update `data.js` to define and export `keySignatures` object mapping key names to `{ notes: [], accidental: '#'/'b' }` structure. Populate for major keys.
-* [ ] **4.2:** Add `currentKeySignature` state management to `app.js` (getter/setter functions).
-* [ ] **4.2:** Modify `getNoteFromPosition` in `staff.js` to return base note info `{ baseNote, octave, noteName }`.
-* [ ] **4.2:** Modify `staff.js` `mousedown` handler to use `currentKeySignature` state and `keySignatures` data to calculate the final `noteName` based on key rules.
+* [X] **4.2:** Add `currentKeySignature` state management to `app.js` (getter/setter functions).
+* [X] **4.2:** Modify `getNoteFromPosition` in `staff.js` to return base note info `{ baseNote, octave, noteName }`.
+* [X] **4.2:** Modify `staff.js` `mousedown` handler to use `currentKeySignature` state and `keySignatures` data to calculate the final `noteName` based on key rules.
 * [ ] **4.3:** Create `displayKeySignature(keyName, svgElement)` function in `staff.js` to draw/clear sharp/flat symbols on the main staff SVG based on `keySignatures` data. Define standard Y positions for accidentals.
 * [ ] **4.3:** Call `displayKeySignature` initially and whenever key state changes in `app.js`.
 * [ ] **4.4:** Add HTML buttons (`#accidental-natural`, etc.) with `data-accidental` attributes to `controls-area`.
