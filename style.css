@@ -147,9 +147,50 @@ footer {
     min-height: 200px; /* Ensure enough space for staff + ledger lines later */
 }
 #staff-area::before { content: ''; } /* Remove placeholder */
-#controls-area::before { content: 'Controls Area'; }
+/* #controls-area::before { content: 'Controls Area'; } */ /* Remove placeholder */
 #trumpet-area::before { content: ''; } /* Remove placeholder */
 #fingering-options-area::before { content: 'Fingering Options Area'; }
+
+/* --- Accidental Controls Styling --- */
+#controls-area {
+    justify-content: flex-start; /* Align controls to the start */
+    align-items: flex-start; /* Align to top */
+    min-height: 50px; /* Reduce min-height */
+    border: none; /* Remove placeholder border */
+    padding: 0.5rem 1rem; /* Adjust padding */
+}
+
+.segmented-control {
+    display: inline-flex;
+    border: 1px solid #a0a0a0;
+    border-radius: 5px;
+    overflow: hidden; /* Clip corners */
+}
+
+.segmented-control button {
+    background-color: #f0f0f0;
+    border: none;
+    border-left: 1px solid #a0a0a0; /* Separator */
+    padding: 0.5em 1em;
+    cursor: pointer;
+    font-size: 1.2rem; /* Make symbols larger */
+    line-height: 1;
+    color: #333;
+    transition: background-color 0.2s ease;
+}
+
+.segmented-control button:first-child {
+    border-left: none; /* No separator for the first button */
+}
+
+.segmented-control button:hover {
+    background-color: #e0e0e0;
+}
+
+.segmented-control button.active {
+    background-color: #007bff; /* Example active color */
+    color: white;
+}
 
 /* --- Trumpet SVG Valve Styling --- */
 /* Default valve cap fill is set in the SVG, but we can override */

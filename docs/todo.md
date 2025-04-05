@@ -37,9 +37,9 @@
 * [X] **4.2:** Modify `staff.js` `mousedown` handler to use `currentKeySignature` state and `keySignatures` data to calculate the final `noteName` based on key rules.
 * [X] **4.3:** Create `displayKeySignature(keyName, svgElement)` function in `staff.js` to draw/clear sharp/flat symbols on the main staff SVG based on `keySignatures` data. Define standard Y positions for accidentals.
 * [X] **4.3:** Call `displayKeySignature` initially and whenever key state changes in `app.js`.
-* [ ] **4.4:** Add HTML buttons (`#accidental-natural`, etc.) with `data-accidental` attributes to `controls-area`.
-* [ ] **4.4:** Add CSS for segmented control appearance and `.active` state for accidental buttons.
-* [ ] **4.4:** Create `controls.js` with `initAccidentalControls(callback)` and `resetAccidentalButtons()` functions. Initialize in `app.js`.
+* [X] **4.4:** Add HTML buttons (`#accidental-natural`, etc.) with `data-accidental` attributes to `controls-area`.
+* [X] **4.4:** Add CSS for segmented control appearance and `.active` state for accidental buttons.
+* [X] **4.4:** Create `controls.js` with `initAccidentalControls(callback)` and `resetAccidentalButtons()` functions. Initialize in `app.js`.
 * [ ] **4.5:** Add `selectedAccidental` state management to `app.js` (getter/setter, updated by callback from `initAccidentalControls`).
 * [ ] **4.5:** Modify `staff.js` `mousedown` note calculation logic to prioritize `selectedAccidental` over key signature rules when determining the final `noteName`.
 * [ ] **4.6:** Implement display of accidental symbol (`#placed-accidental` SVG text) next to `#placed-note` in `staff.js` `mousedown` handler, based on whether the final note required an explicit or key-signature accidental (including naturals overriding key sig).

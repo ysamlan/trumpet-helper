@@ -1,8 +1,8 @@
-import { renderStaff, displayKeySignature } from './staff.js'; // Import displayKeySignature
+import { renderStaff, displayKeySignature } from './staff.js';
 import { renderTrumpetSVG } from './trumpet.js';
 import { initAudio } from './audio.js';
-// Future imports will go here (e.g., controls)
-import { keySignatures } from './data.js'; // Import for validation
+import { initAccidentalControls, resetAccidentalButtons } from './controls.js'; // Import controls
+import { keySignatures } from './data.js';
 
 // --- Application State ---
 let currentKeySignature = "C Major"; // Default key signature
@@ -38,6 +38,17 @@ export function setCurrentKeySignature(keyName) {
     }
 }
 
+/**
+ * Handles the selection of an accidental override.
+ * (Will be fully implemented in Task 4.5 to update app state)
+ * @param {string | null} accidentalType - 'natural', 'sharp', 'flat', or null if deselected.
+ */
+function handleAccidentalSelection(accidentalType) {
+    console.log(`[App] Accidental selected via controls: ${accidentalType}`);
+    // TODO (Task 4.5): Update selectedAccidental state here
+    // setSelectedAccidental(accidentalType);
+}
+
 
 /**
  * Initializes the application.
@@ -62,7 +73,8 @@ async function initializeApp() { // Make async to await SVG rendering
             // Example: document.getElementById('audio-error-message').textContent = "Audio failed to load.";
         });
 
-    // initControls(); // Future step
+    // Initialize Controls
+    initAccidentalControls(handleAccidentalSelection);
 
     console.log("Application initialized (audio loading in background).");
 }
