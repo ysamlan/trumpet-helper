@@ -43,16 +43,17 @@ main {
     gap: 1rem; /* Space between sections */
 }
 
-/* Layout Sections */
+/* Layout Sections - General cleanup */
 #staff-area, #controls-area, #trumpet-area, #fingering-options-area {
-    border: 1px dashed #999999; /* Dashed border for placeholders */
-    padding: 1rem;
-    min-height: 150px; /* Minimum height for visibility */
-    display: flex; /* Use flex for content alignment later */
-    justify-content: center;
-    align-items: center;
-    font-style: italic;
-    color: #666666;
+    /* Remove general placeholder styles */
+    /* border: 1px dashed #999999; */
+    /* padding: 1rem; */ /* Specific padding applied where needed */
+    /* min-height: 150px; */ /* Specific min-heights applied where needed */
+    display: flex; /* Keep flex for alignment within sections */
+    /* justify-content: center; */ /* Specific alignment applied where needed */
+    /* align-items: center; */ /* Specific alignment applied where needed */
+    /* font-style: italic; */
+    /* color: #666666; */
 }
 
 /* Responsive Layout: Side-by-side on wider screens (768px and up) */
@@ -84,7 +85,7 @@ main {
     } */
      #staff-area { order: 1; }
      #controls-area { order: 2; min-height: auto; /* Allow controls height to shrink */}
-     #trumpet-area { order: 3; }
+     #trumpet-area { order: 3; max-height: 35vh; /* Constrain trumpet height */ }
      #fingering-options-area { order: 4; }
 }
 
