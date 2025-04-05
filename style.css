@@ -321,6 +321,19 @@ footer {
     margin-right: auto;
 }
 
+/* Info display for hover */
+#key-info-display {
+    position: absolute;
+    top: calc(50% + 35px); /* Position below center toggle */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.9rem;
+    color: #555;
+    min-height: 1.2em; /* Prevent layout shift */
+    pointer-events: none; /* Don't interfere with clicks */
+}
+
+
 /* Styling for the radial key buttons */
 .key-option-btn {
     position: absolute;

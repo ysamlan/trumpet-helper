@@ -5,11 +5,12 @@
 
 import { keySignatures } from './data.js';
 
-const RADIUS = 100; // Reduced radius to bring buttons closer
+const RADIUS = 100; // Radius of the circle for key buttons
 const CENTER_X = 150; // Center X of the container (relative)
 const CENTER_Y = 110; // Center Y of the container (relative)
 const BUTTON_RADIUS = 25; // Radius of each key button
 const TOGGLE_BUTTON_SIZE = 60; // Size of the central toggle button
+const INFO_DISPLAY_Y_OFFSET = 35; // Offset below the center for hover info
 
 /**
  * Renders the radial key signature selection menu.
@@ -26,12 +27,17 @@ export function renderRadialMenu(containerId, mode, keySelectCallback, toggleMod
     }
     container.innerHTML = ''; // Clear previous content (like placeholder)
     container.style.position = 'relative'; // Needed for absolute positioning of buttons
-    container.style.width = `${CENTER_X * 2}px`; // Set container size based on layout
+    container.style.width = `${CENTER_X * 2}px`;
     container.style.height = `${CENTER_Y * 2}px`;
-    container.style.margin = 'auto'; // Center the container if needed
+    container.style.margin = 'auto';
+
+    // Add info display element
+    const infoDisplay = document.createElement('div');
+    infoDisplay.id = 'key-info-display';
+    container.appendChild(infoDisplay);
 
     const keysToShow = Object.entries(keySignatures).filter(([keyName, keyInfo]) => {
-        if (keyInfo.accidental === null) return true; // Always show C Major
+        if (keyInfo.accidental === null) return true; // Always show C Major (0 accidentals)
         return mode === 'sharps' ? keyInfo.accidental === '#' : keyInfo.accidental === 'b';
     });
 
@@ -40,14 +46,19 @@ export function renderRadialMenu(containerId, mode, keySelectCallback, toggleMod
         const countA = a.notes.length;
         const countB = b.notes.length;
         // For flats, reverse the sort order (more flats = counter-clockwise)
+        // Sort by number of accidentals (flats reversed)
         return mode === 'flats' ? countB - countA : countA - countB;
     });
 
+    // Find C Major's index in the sorted list to calculate offset
+    const cMajorIndex = keysToShow.findIndex(([keyName]) => keyName === "C Major");
     const angleStep = (2 * Math.PI) / keysToShow.length;
+    // Calculate offset needed to place C Major at the top (-PI/2)
+    const angleOffset = -(cMajorIndex * angleStep);
 
     keysToShow.forEach(([keyName, keyInfo], index) => {
-        // Start at the top (12 o'clock) and go clockwise
-        const angle = -Math.PI / 2 + index * angleStep;
+        // Calculate angle with offset to place C Major at the top
+        const angle = -Math.PI / 2 + index * angleStep + angleOffset;
         const x = CENTER_X + RADIUS * Math.cos(angle) - BUTTON_RADIUS;
         const y = CENTER_Y + RADIUS * Math.sin(angle) - BUTTON_RADIUS;
 
@@ -63,6 +74,17 @@ export function renderRadialMenu(containerId, mode, keySelectCallback, toggleMod
         button.addEventListener('click', () => {
             keySelectCallback(keyName);
         });
+
+        // Add hover listeners for info display
+        button.addEventListener('mouseover', () => {
+            const numAccidentals = keyInfo.notes.length;
+            const accidentalSymbol = keyInfo.accidental === '#' ? '♯' : (keyInfo.accidental === 'b' ? '♭' : '');
+            infoDisplay.textContent = numAccidentals > 0 ? `${numAccidentals} ${accidentalSymbol}` : '0';
+        });
+        button.addEventListener('mouseout', () => {
+            infoDisplay.textContent = ''; // Clear on mouse out
+        });
+
 
         container.appendChild(button);
     });
