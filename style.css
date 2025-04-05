@@ -275,7 +275,7 @@ footer {
 .modal-content {
     position: relative; /* For positioning the close button */
     background-color: #fff;
-    padding: 3rem 2rem; /* Increased top/bottom padding */
+    padding: 1.5rem 2rem 2rem 2rem; /* Adjust padding: Less top, keep others */
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     z-index: 1001; /* Above overlay */
@@ -309,7 +309,7 @@ footer {
 }
 
 #key-selection-area {
-    margin-top: 1rem;
+    margin-top: 2rem; /* Increase top margin significantly */
     position: relative; /* For absolute positioning of children */
     width: 300px; /* Fixed width based on JS constants */
     height: 220px; /* Fixed height based on JS constants */
