@@ -149,7 +149,7 @@ footer {
 #staff-area::before { content: ''; } /* Remove placeholder */
 /* #controls-area::before { content: 'Controls Area'; } */ /* Remove placeholder */
 #trumpet-area::before { content: ''; } /* Remove placeholder */
-#fingering-options-area::before { content: 'Fingering Options Area'; }
+/* #fingering-options-area::before { content: 'Fingering Options Area'; } */ /* Remove placeholder */
 
 /* --- Accidental Controls Styling --- */
 #controls-area {
@@ -385,4 +385,36 @@ footer {
 
 #key-mode-toggle:active {
     transform: scale(0.95);
+}
+
+/* --- Alternate Fingering Controls Styling --- */
+#fingering-options-area {
+    justify-content: flex-start; /* Align controls to the start */
+    align-items: flex-start; /* Align to top */
+    min-height: 50px; /* Reduce min-height */
+    border: none; /* Remove placeholder border */
+    padding: 0.5rem 1rem; /* Adjust padding */
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    gap: 0.5rem; /* Space between buttons */
+}
+
+.fingering-option-btn {
+    padding: 0.4em 0.8em;
+    font-size: 0.9rem;
+    background-color: #f0f0f0;
+    border: 1px solid #a0a0a0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    color: #333;
+}
+
+.fingering-option-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.fingering-option-btn.active {
+    background-color: #6c757d; /* Example secondary/gray active color */
+    color: white;
+    border-color: #5a6268;
 }

@@ -53,7 +53,7 @@
 
 ## Phase 5: Alternate Fingerings & Final Polish
 
-* [ ] **5.1:** Add CSS rules in `style.css` for dynamically created `.fingering-option-btn` elements inside `#fingering-options-area` (layout, appearance, `.active` state).
+* [X] **5.1:** Add CSS rules in `style.css` for dynamically created `.fingering-option-btn` elements inside `#fingering-options-area` (layout, appearance, `.active` state).
 * [ ] **5.2:** Create helper `formatFingering(array)` in `trumpet.js` to return string ("Open", "1-3", etc.).
 * [ ] **5.2:** Modify `staff.js` `mousedown`: If `fingeringInfo` exists, clear `#fingering-options-area`, create/append buttons for primary + alternates (using `formatFingering` for text, storing array in `dataset.fingering`), add `.active` to primary, make area visible. Hide/clear area if no `fingeringInfo`.
 * [ ] **5.3:** Add `initAlternateFingeringControls()` function (e.g., in `trumpet.js` or `app.js`) with delegated event listener on `#fingering-options-area`. On button click, get fingering array from dataset, call `updateTrumpetSVG`, update `.active` button states. Call this init function in `app.js`.
