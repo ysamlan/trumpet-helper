@@ -483,10 +483,8 @@ function handleStaffMouseDown(event, svg) {
         optionsArea.style.color = '#888';
         console.log("[MouseDown] No fingering info found, displaying '???'");
         announce(`${noteName || 'Selected position'} - No standard fingering`); // Announce note and lack of fingering
-    } else if (noteName && fingeringInfo) {
-        // Announce the selected note and its primary fingering
-        announce(`${noteName} - Fingering: ${formatFingering(fingeringInfo.primary)}`);
     }
+    // Removed the invalid 'else if' block here
 
 
     // --- Trigger Audio ---
