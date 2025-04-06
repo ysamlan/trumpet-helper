@@ -10,6 +10,8 @@ So we built a simple, interactive web-based tool for beginner trumpet players. Y
 
 You can serve this from any domain; to run locally you'll need to run through an HTTP server due to limitations of `file` urls. Try running `npx serve` for the easiest way to run it locally.
 
+**Source Code:** [Link to GitHub Repository - To be added]
+
 ## Development
 
 The [spec](docs/spec.md) and [todo](docs/todo.md) was written in a prompt-based conversation with Gemini Pro 2.5. Nearly the entire resulting product was vibe-coded through pointing Aider with Gemini Pro 2.5 at the TODO files and telling it to keep working on its todos. ([prompts](docs/prompts.md) was LLM-generated during the spec/todo process, but in practice Aider did a good enough job that it wasn't used directly).
