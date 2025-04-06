@@ -471,6 +471,11 @@ function handleStaffMouseDown(event, svg) {
             });
         }
 
+        // Announce the selected note and its primary fingering after buttons are created
+        if (noteName) { // Ensure we have a note name to announce
+            announce(`${noteName} - Fingering: ${formatFingering(fingeringInfo.primary)}`);
+        }
+
     } else {
         // No fingering info found
         updateTrumpetSVG(null); // Reset trumpet diagram
