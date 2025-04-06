@@ -31,6 +31,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Minify Action # <-- ADD THIS STEP
+        uses: dra1ex/minify-action@v1.0.3 # <-- ADD THIS STEP
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
