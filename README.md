@@ -6,11 +6,11 @@ So we built a simple, interactive web-based tool for beginner trumpet players. Y
 
 ## Usage
 
-**Live Application:** [Link to Deployed Application - To be added]
+**Live Application:** https://ysamlan.github.io/trumpet-helper/
 
 You can serve this from any domain; to run locally you'll need to run through an HTTP server due to limitations of `file` urls. Try running `npx serve` for the easiest way to run it locally.
 
-**Source Code:** [Link to GitHub Repository - To be added]
+**Source Code:** https://github.com/ysamlan/trumpet-helper
 
 ## Development
 
