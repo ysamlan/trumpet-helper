@@ -1,35 +1,26 @@
 # Trumpet Fingering Helper
 
-A simple, interactive web-based tool for beginner trumpet players. Select a key signature, click notes on a musical staff, hear the pitch, and see the standard trumpet fingering illustrated visually.
+My 5th grader got a trumpet at school. He really enjoys learning new songs, but without deeper music theory or sheet-music-reading experience, picking out a new song is a painstaking process of chart lookups and hand-writing notation for him.
 
-## Features
-
-*   Interactive musical staff with dynamic ledger lines.
-*   Key signature selection via a Circle of Fifths radial menu.
-*   Accidental override controls (Natural, Sharp, Flat).
-*   Audio feedback using sampled trumpet sounds via Tone.js.
-*   Visual trumpet diagram showing primary and alternate fingerings.
-*   Responsive design for desktop and mobile.
-*   Accessibility features including ARIA labels and announcements.
+So we built a simple, interactive web-based tool for beginner trumpet players. You can select a key signature, click notes on a musical staff, hear the pitch, and see the standard trumpet fingering illustrated visually in one go.
 
 ## Usage
 
 (Link to deployed application will go here once available)
 
-Simply open the `index.html` file in your web browser.
+You can serve this from any domain; to run locally you'll need to run through an HTTP server due to limitations of `file` urls. Try running `npx serve` for the easiest way to run it locally.
 
 ## Development
 
-This is a static web application built with HTML, CSS, and vanilla JavaScript.
+The [spec](docs/spec.md) and [todo](docs/todo.md) was written in a prompt-based conversation with Gemini Pro 2.5. Nearly the entire resulting product was vibe-coded through pointing Aider with Gemini Pro 2.5 at the TODO files and telling it to keep working on its todos. ([prompts](docs/prompts.md) was LLM-generated during the spec/todo process, but in practice Aider did a good enough job that it wasn't used directly).
 
-*   **Audio:** [Tone.js](https://tonejs.github.io/) and [tonejs-instruments](https://github.com/nbrosowsky/tonejs-instruments)
-*   **SVG:** Trumpet diagram based on an icon from SVG Repo.
+The result is a static web application built with HTML, CSS, and vanilla JavaScript.
 
 ## Attribution
 
-*   **Trumpet SVG:** Based on icon from [SVG Repo](https://www.svgrepo.com/svg/190518/trumpet) (License typically allows free use, check specific icon details if needed).
-*   **Trumpet Samples:** Provided by [tonejs-instruments](https://github.com/nbrosowsky/tonejs-instruments) by Noah Brosowsky (MIT License).
+*   **Trumpet Samples:** Provided by [tonejs-instruments](https://github.com/nbrosowsky/tonejs-instruments) by Nicholaus P. Brosowsky (MIT License).
 *   **Audio Engine:** [Tone.js](https://tonejs.github.io/) (MIT License).
+*   **Trumpet SVG:** Based on image from [SVG Repo](https://www.svgrepo.com/svg/190518/trumpet) (CC0 / public domain).
 
 ## License
 
