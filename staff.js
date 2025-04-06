@@ -19,7 +19,7 @@ const NOTE_HEAD_RY = LINE_SPACING / 2.8; // Vertical radius for ellipse note hea
 const ACCIDENTAL_SHARP = "\u266F"; // Unicode sharp symbol
 const ACCIDENTAL_FLAT = "\u266D"; // Unicode flat symbol
 const ACCIDENTAL_NATURAL = "\u266E"; // Unicode natural symbol (for later use)
-const KEY_SIGNATURE_START_X = CLEF_X + 35; // Recalculated X offset (25 + 35 = 60)
+const KEY_SIGNATURE_START_X = CLEF_X + 50; // Recalculated X offset (25 + 35 = 60)
 const KEY_SIGNATURE_SPACING = 10; // Horizontal space between accidentals
 const ACCIDENTAL_FONT_SIZE = 22; // Reduced font size for accidentals
 const PLACED_ACCIDENTAL_X_OFFSET = -15; // How far left of the note head center the accidental appears
