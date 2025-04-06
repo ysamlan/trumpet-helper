@@ -33,7 +33,8 @@ const FLAT_POSITIONS = Object.freeze({ B: 4, E: 1, A: 5, D: 2, G: 6, C: 3, F: 7 
 import { getFingering, keySignatures } from './data.js';
 import { updateTrumpetSVG, formatFingering } from './trumpet.js'; // Import formatFingering
 import { getSampler } from './audio.js';
-import { getCurrentKeySignature, getSelectedAccidental, setSelectedAccidental } from './app.js';
+// Import announce function from app.js
+import { getCurrentKeySignature, getSelectedAccidental, setSelectedAccidental, announce } from './app.js';
 import { resetAccidentalButtons } from './controls.js';
 
 // --- Module State ---
@@ -481,6 +482,10 @@ function handleStaffMouseDown(event, svg) {
         optionsArea.style.fontStyle = 'italic';
         optionsArea.style.color = '#888';
         console.log("[MouseDown] No fingering info found, displaying '???'");
+        announce(`${noteName || 'Selected position'} - No standard fingering`); // Announce note and lack of fingering
+    } else if (noteName && fingeringInfo) {
+        // Announce the selected note and its primary fingering
+        announce(`${noteName} - Fingering: ${formatFingering(fingeringInfo.primary)}`);
     }
 
 

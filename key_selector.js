@@ -68,6 +68,7 @@ export function renderRadialMenu(containerId, mode, keySelectCallback, toggleMod
         const displayName = keyName.split(' ')[0];
         button.textContent = displayName;
         button.dataset.keyname = keyName;
+        button.setAttribute('aria-label', `Select ${keyName}`); // Add aria-label
         button.style.left = `${x}px`;
         button.style.top = `${y}px`;
 
@@ -93,8 +94,10 @@ export function renderRadialMenu(containerId, mode, keySelectCallback, toggleMod
     const toggleButton = document.createElement('button');
     toggleButton.id = 'key-mode-toggle';
     // Show the symbol for the CURRENT mode, title describes the action (switch to other mode)
+    const toggleActionLabel = mode === 'sharps' ? 'Switch to Flat Keys' : 'Switch to Sharp Keys';
     toggleButton.textContent = mode === 'sharps' ? '♯' : '♭';
-    toggleButton.title = mode === 'sharps' ? 'Switch to Flat Keys' : 'Switch to Sharp Keys';
+    toggleButton.title = toggleActionLabel; // Keep title for tooltips
+    toggleButton.setAttribute('aria-label', toggleActionLabel); // Add aria-label for screen readers
     toggleButton.style.left = `${CENTER_X - TOGGLE_BUTTON_SIZE / 2}px`;
     toggleButton.style.top = `${CENTER_Y - TOGGLE_BUTTON_SIZE / 2}px`;
 

@@ -9,6 +9,35 @@ import { renderRadialMenu } from './key_selector.js';
 let currentKeySignature = "C Major"; // Default key signature
 let selectedAccidental = null; // 'natural', 'sharp', 'flat', or null
 let keySelectorMode = 'sharps'; // 'sharps' or 'flats' for the radial menu
+let announcerTimeout = null; // Timeout ID for clearing the announcer
+
+/**
+ * Updates the aria-live region with a message for screen readers.
+ * Debounces messages slightly to prevent rapid-fire announcements.
+ * @param {string} message - The message to announce.
+ */
+export function announce(message) {
+    const announcer = document.getElementById('aria-announcer');
+    if (announcer) {
+        // Clear previous timeout if exists
+        if (announcerTimeout) {
+            clearTimeout(announcerTimeout);
+        }
+        // Update immediately
+        announcer.textContent = message;
+        // Set a timeout to clear the announcer after a short delay
+        // This helps ensure repeated announcements of the same thing are read
+        announcerTimeout = setTimeout(() => {
+            if (announcer.textContent === message) { // Only clear if it hasn't changed again
+                announcer.textContent = '';
+            }
+            announcerTimeout = null;
+        }, 1500); // Clear after 1.5 seconds
+    } else {
+        console.warn("Aria announcer element not found.");
+    }
+}
+
 
 /**
  * Gets the currently selected key signature name.
@@ -35,6 +64,7 @@ export function setCurrentKeySignature(keyName) {
         }
 
         updateChangeKeyButtonText(); // Update button text
+        announce(`Key signature set to ${currentKeySignature}`); // Announce change
     } else {
         console.warn(`Attempted to set invalid key signature: ${keyName}`);
     }
@@ -69,6 +99,12 @@ export function setSelectedAccidental(accidentalType) {
  */
 function handleAccidentalSelection(accidentalType) {
     setSelectedAccidental(accidentalType);
+    if (accidentalType) {
+        announce(`${accidentalType.charAt(0).toUpperCase() + accidentalType.slice(1)} override selected`);
+    } else {
+        // Optionally announce deselection, or stay silent
+        // announce("Accidental override cleared");
+    }
 }
 
 /**
