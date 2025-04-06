@@ -3,7 +3,10 @@
  * Manages UI controls like accidental buttons and alternate fingering buttons.
  */
 
-import { updateTrumpetSVG } from './trumpet.js'; // Import for alternate fingering updates
+// Import for alternate fingering updates and formatting
+import { updateTrumpetSVG, formatFingering } from './trumpet.js';
+// Import for screen reader announcements
+import { announce } from './app.js';
 
 const ACCIDENTAL_NATURAL = "\u266E";
 const ACCIDENTAL_SHARP = "\u266F";
@@ -89,6 +92,9 @@ export function initAlternateFingeringControls() {
         try {
             const fingeringArray = JSON.parse(button.dataset.fingering);
             updateTrumpetSVG(fingeringArray);
+            // Announce the selected fingering
+            const fingeringString = formatFingering(fingeringArray);
+            announce(`Selected fingering: ${fingeringString}`);
         } catch (e) {
             console.error("Failed to parse fingering data from button:", e);
         }
