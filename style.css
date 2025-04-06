@@ -127,6 +127,12 @@ footer {
 }
 #staff-area::before { content: ''; } /* Remove placeholder */
 /* #controls-area::before { content: 'Controls Area'; } */ /* Remove placeholder */
+#trumpet-area svg {
+    width: 100%;
+    height: 100%;
+    display: block; /* Prevents potential extra space below */
+    max-width: 100%; /* Ensure it doesn't overflow container */
+}
 #trumpet-area::before { content: ''; } /* Remove placeholder */
 /* #fingering-options-area::before { content: 'Fingering Options Area'; } */ /* Remove placeholder */
 
