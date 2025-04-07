@@ -29,8 +29,8 @@ export async function renderTrumpetSVG(containerId, svgPath = 'trumpet.svg') {
 
         // --- Store the SVG content as a string literal ---
         const svgString = `<?xml version="1.0" encoding="iso-8859-1"?>
-<svg height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-	 viewBox="0 0 512 512" xml:space="preserve">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+	 viewBox="0 100 512 312" xml:space="preserve">
 <g>
 	<path style="fill:#DEB714;" d="M241.067,376.147h-83.865c-36.546,0-66.279-29.732-66.279-66.279v-70.862h216.424v70.862
 		C307.347,346.414,277.613,376.147,241.067,376.147z M125.123,273.205v36.662c0,17.689,14.391,32.079,32.08,32.079h83.865
@@ -90,8 +90,6 @@ export async function renderTrumpetSVG(containerId, svgPath = 'trumpet.svg') {
         }
 
         // Adjust SVG attributes for embedding
-        svgElement.setAttribute("width", "100%");
-        svgElement.setAttribute("height", "100%");
         svgElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
         // Remove fixed width/height if present in the source SVG (already done in the string, but good practice)
         svgElement.removeAttribute("width");
