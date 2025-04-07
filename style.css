@@ -128,10 +128,11 @@ footer {
 #staff-area::before { content: ''; } /* Remove placeholder */
 /* #controls-area::before { content: 'Controls Area'; } */ /* Remove placeholder */
 #trumpet-area svg {
-    width: 100%;
-    height: 100%;
-    display: block; /* Prevents potential extra space below */
-    max-width: 100%; /* Ensure it doesn't overflow container */
+    display: block;       /* Prevents potential extra space below */
+    width: 100%;          /* Make SVG fill container width */
+    max-width: 400px;     /* Optional: Set a max visual size */
+    height: auto;         /* IMPORTANT: Maintain aspect ratio defined by viewBox */
+    margin-inline: auto;  /* Center horizontally if max-width is applied */
 }
 #trumpet-area::before { content: ''; } /* Remove placeholder */
 /* #fingering-options-area::before { content: 'Fingering Options Area'; } */ /* Remove placeholder */
