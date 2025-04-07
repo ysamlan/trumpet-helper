@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <!-- CDN Tone.js -->
     <script src="https://unpkg.com/tone@15.0.4/build/Tone.js"></script>
 </head>
+
 <body>
     <div id="app-container">
         <header>
@@ -18,13 +20,16 @@
                 <!-- Staff SVG will be rendered here -->
             </section>
             <section id="controls-area" aria-label="Note Controls">
-                <div id="accidental-controls" class="segmented-control" role="group" aria-label="Select Accidental Override">
+                <div id="accidental-controls" class="segmented-control" role="group"
+                    aria-label="Select Accidental Override">
                     <button id="accidental-natural" data-accidental="natural" aria-label="Natural Accidental">♮</button>
                     <button id="accidental-sharp" data-accidental="sharp" aria-label="Sharp Accidental">♯</button>
                     <button id="accidental-flat" data-accidental="flat" aria-label="Flat Accidental">♭</button>
                 </div>
-                <button id="change-key-btn" class="control-button" aria-label="Change Key Signature">C Major</button> <!-- Add Change Key Button -->
-                <span id="note-name-display" class="note-info-display" aria-live="polite"></span> <!-- Add element for note name -->
+                <button id="change-key-btn" class="control-button" aria-label="Change Key Signature">C Major</button>
+                <!-- Add Change Key Button -->
+                <span id="note-name-display" class="note-info-display" aria-live="polite"></span>
+                <!-- Add element for note name -->
             </section>
             <section id="trumpet-area" aria-label="Trumpet Diagram Area">
                 <!-- Trumpet SVG will be rendered here -->
@@ -33,11 +38,47 @@
                 <!-- Alternate fingering buttons will be rendered here -->
             </section>
         </main>
+
+        <section id="about-section" aria-labelledby="about-toggle">
+            <h2>
+                <button id="about-toggle" aria-expanded="true" aria-controls="about-content">
+                    How to Use The Tool <span class="toggle-indicator">▼</span>
+                </button>
+            </h2>
+            <div id="about-content" role="region" aria-labelledby="about-toggle">
+                <p>
+                <ul>
+                    <li>Press anywhere in the staff area to enter notes.</li>
+                    <li>Use the ♮/♯/♭ buttons to override the current key's default accidentals for your next note.</li>
+                    <li>Use the key signature button to change keys.
+                        <ul>
+                            <li>Press the ♯/♭ symbol in the
+                                center to toggle between flat and sharp keys.</li>
+                        </ul>
+                    </li>
+                </ul>
+                </p>
+                <p>
+                    <strong>About</strong>: This is an interactive tool to help trumpet players learn and
+                    practice fingerings.
+                    If you're still learning how to read sheet music, this can help you hear and
+                    visualize the notes. Enter notes on the musical staff, see the correct
+                    valve combinations on a trumpet diagram, and hear the corresponding pitch.
+                    Select different key signatures and explore alternate fingerings.
+                    If you can't sight-read but want to learn trumpet songs using sheet music,
+                    this tool can help.
+                </p>
+            </div>
+        </section>
+
         <footer>
             <p>
-                <a href="https://github.com/ysamlan/trumpet-helper" target="_blank" rel="noopener noreferrer">source code</a> | <a href="LICENSE" target="_blank">mit license</a> |
-                svg from <a href="https://www.svgrepo.com/svg/190518/trumpet" target="_blank" rel="noopener noreferrer">svg repo</a> |
-                samples from <a href="https://github.com/nbrosowsky/tonejs-instruments" target="_blank" rel="noopener noreferrer">tonejs-instruments</a> |
+                <a href="https://github.com/ysamlan/trumpet-helper" target="_blank" rel="noopener noreferrer">source
+                    code</a> | <a href="LICENSE" target="_blank">mit license</a> |
+                svg from <a href="https://www.svgrepo.com/svg/190518/trumpet" target="_blank"
+                    rel="noopener noreferrer">svg repo</a> |
+                samples from <a href="https://github.com/nbrosowsky/tonejs-instruments" target="_blank"
+                    rel="noopener noreferrer">tonejs-instruments</a> |
                 audio via <a href="https://tonejs.github.io/" target="_blank" rel="noopener noreferrer">tone.js</a>
             </p>
         </footer>
@@ -46,7 +87,8 @@
     <!-- Key Signature Selection Modal -->
     <div id="key-popup" class="modal hidden">
         <div id="key-popup-overlay" class="modal-overlay" aria-label="Close Key Signature Popup"></div>
-        <div id="key-popup-content" class="modal-content" role="dialog" aria-labelledby="key-popup-title" aria-modal="true">
+        <div id="key-popup-content" class="modal-content" role="dialog" aria-labelledby="key-popup-title"
+            aria-modal="true">
             <button id="key-popup-close" class="modal-close-btn" aria-label="Close Key Signature Popup">&times;</button>
             <h2 id="key-popup-title">Select Key Signature</h2>
             <div id="key-selection-area" aria-label="Key Signature Selection Menu">
@@ -62,4 +104,5 @@
     <!-- Visually hidden container for screen reader announcements -->
     <div id="aria-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 </body>
+
 </html>

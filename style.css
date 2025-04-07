@@ -416,3 +416,71 @@ footer {
     color: white;
     border-color: #5a6268;
 }
+
+/* --- About Section Styling --- */
+#about-section {
+    padding: 1rem;
+    border-top: 1px solid #cccccc; /* Separator from main content */
+    background-color: #f8f9fa; /* Slightly different background */
+}
+
+#about-section h2 {
+    margin: 0 0 0.5rem 0; /* Remove default h2 margin, add bottom margin */
+    font-size: 1.1rem; /* Slightly smaller than main header */
+}
+#about-section ul {
+    list-style-type: disc; /* Use bullets for list items */
+    padding-left: 1.5rem; /* Indent list items */
+}
+
+#about-toggle {
+    /* Reset button styles */
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit; /* Inherit font from h2 */
+    color: inherit; /* Inherit color */
+    cursor: pointer;
+    text-align: left;
+    width: 100%; /* Make it span the width */
+    display: flex; /* Use flex to align text and indicator */
+    justify-content: space-between; /* Push indicator to the right */
+    align-items: center;
+}
+
+#about-toggle:hover,
+#about-toggle:focus {
+    text-decoration: underline; /* Indicate interactivity */
+}
+
+.toggle-indicator {
+    display: inline-block;
+    margin-left: 0.5em;
+    transition: transform 0.2s ease-in-out;
+    font-size: 0.8em; /* Make indicator slightly smaller */
+}
+
+/* Rotate indicator when collapsed */
+#about-toggle[aria-expanded="false"] .toggle-indicator {
+    transform: rotate(-90deg);
+}
+
+#about-content {
+    padding-left: 0.5rem; /* Indent content slightly */
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #333;
+    overflow: hidden; /* Needed for smooth transition */
+    transition: max-height 0.3s ease-out, visibility 0.3s ease-out;
+    max-height: 500px; /* Set a max-height large enough for content */
+    visibility: visible;
+}
+
+#about-content[aria-hidden="true"] {
+    max-height: 0;
+    visibility: hidden;
+    padding-top: 0; /* Remove padding when hidden */
+    padding-bottom: 0;
+    margin-top: 0; /* Remove margin when hidden */
+    margin-bottom: 0;
+}

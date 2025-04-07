@@ -208,6 +208,8 @@ async function initializeApp() { // Make async to await SVG rendering
         keyPopupCloseBtn.addEventListener('click', hideKeyPopup);
     }
 
+    // Initialize About Section Toggle
+    initAboutSectionToggle();
 
     console.log("Application initialized (audio loading in background).");
 }
@@ -218,4 +220,37 @@ if (document.readyState === 'loading') {
 } else {
     // DOMContentLoaded has already fired
     initializeApp();
+}
+
+/**
+ * Initializes the toggle functionality for the About section.
+ */
+function initAboutSectionToggle() {
+    const toggleButton = document.getElementById('about-toggle');
+    const contentDiv = document.getElementById('about-content');
+    const indicator = toggleButton?.querySelector('.toggle-indicator'); // Get indicator span
+
+    if (!toggleButton || !contentDiv || !indicator) {
+        console.warn('About section toggle elements not found.');
+        return;
+    }
+
+    toggleButton.addEventListener('click', () => {
+        const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+
+        // Toggle ARIA attributes
+        toggleButton.setAttribute('aria-expanded', !isExpanded);
+        contentDiv.setAttribute('aria-hidden', isExpanded);
+
+        // Update indicator text (optional, CSS handles rotation)
+        // indicator.textContent = isExpanded ? '►' : '▼';
+
+        // Announce state change
+        announce(`About section ${isExpanded ? 'collapsed' : 'expanded'}`);
+    });
+
+    // Ensure initial state matches HTML (optional, but good practice)
+    const initiallyExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+    contentDiv.setAttribute('aria-hidden', !initiallyExpanded);
+    // indicator.textContent = initiallyExpanded ? '▼' : '►';
 }
