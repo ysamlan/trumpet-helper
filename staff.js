@@ -449,6 +449,10 @@ function handleStaffMouseDown(event, svg) {
         }
     }
 
+    // --- Update Note Name Display ---
+    if (noteDisplayElement) {
+        noteDisplayElement.textContent = noteName ? `Note: ${noteName}` : '';
+    }
 
     // --- Update Trumpet Fingering Display ---
     const fingeringInfo = noteName ? getFingering(noteName) : null;
