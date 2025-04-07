@@ -105,6 +105,7 @@ main {
         overflow: hidden; /* Prevent content overflow */
         align-items: center; /* Center SVG vertically */
         justify-content: center; /* Center SVG horizontally */
+        padding-inline: 1rem; /* Add horizontal padding for narrow screens */
      }
      #fingering-options-area { order: 4; }
 }
