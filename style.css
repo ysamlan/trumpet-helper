@@ -102,7 +102,7 @@ main {
      #trumpet-area {
         order: 3;
         min-height: 150px; /* Add a smaller min-height just in case */
-        margin-top: 48px;
+        
         align-items: center; /* Center SVG vertically */
         justify-content: center; /* Center SVG horizontally */
      }
