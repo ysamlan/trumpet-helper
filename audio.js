@@ -44,30 +44,24 @@ export function initAudio() {
         console.log("Initializing audio sampler via Tone.js v15.0.4 with local samples...");
 
         try {
-            // Define the notes and their corresponding local audio files
-            // Keys MUST be valid Scientific Pitch Notation or MIDI numbers.
-            // Values MUST match the filenames in the samples directory.
             const trumpetSamples = {
-                "A3": "A3.mp3",     // Assuming A3.mp3 exists
-                "C4": "C4.mp3",     // Assuming C4.mp3 exists
-                "D#4": "Ds4.mp3",   // Use standard SPN key "D#4", maps to filename "Ds4.mp3"
-                // "F#4": "Fs4.mp3", // Add if Fs4.mp3 exists
-                // "A4": "A4.mp3",   // Add if A4.mp3 exists
-                // "C5": "C5.mp3",   // Add if C5.mp3 exists
-                // "D#5": "Ds5.mp3", // Add if Ds5.mp3 exists
-                // "F#5": "Fs5.mp3", // Add if Fs5.mp3 exists
-                "A5": "A5.mp3",     // Assuming A5.mp3 exists
-                "C6": "C6.mp3"      // Assuming C6.mp3 exists
-                // Add other notes corresponding to available .mp3 files in the directory
+                "A3": "A3.mp3",
+                "A5": "A5.mp3",
+                "A#4": "As4.mp3",
+                "C4": "C4.mp3", 
+                "C6": "C6.mp3",
+                "D5": "D5.mp3",
+                "D#4": "Ds4.mp3",
+                "F3": "F3.mp3",
+                "F4": "F4.mp3",
+                "F5": "F5.mp3",
+                "G4": "G4.mp3",
             };
 
-            // Create the Sampler instance using the global Tone object from CDN
             trumpetSampler = new Tone.Sampler({
                 urls: trumpetSamples,
-                release: 0.4, // Keep or adjust the release time as needed
-                baseUrl: 'tonejs-instruments/samples/trumpet/', // Correct local path
-                // Note: The 'onerror' callback is not directly supported in the Sampler constructor options in newer Tone.js versions.
-                // Errors are typically handled via the Tone.loaded() promise.
+                release: 0.4, 
+                baseUrl: 'tonejs-instruments/samples/trumpet/',
             }).toDestination(); // Connect directly to destination
 
             // Wait for the sampler to load all samples
