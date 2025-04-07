@@ -226,14 +226,15 @@ function getVerticalPositionInfo(yCoord) {
 }
 
 /**
- * Calculates the note name based on the snapped Y position and the current key signature.
+ * Calculates the note name based on the snapped Y position, current key signature, and accidental override.
  * @param {number} snappedY - The Y coordinate snapped to the nearest line or space.
- * @returns {{baseNote: string, octave: number, accidentalApplied: string|null, noteName: string} | null}
+ * @returns {{baseNote: string, octave: number, accidentalApplied: string|null, noteName: string, displayNoteName: string} | null}
  *          An object with note details, or null if position is out of range.
  *          - baseNote: The natural letter name (A-G).
  *          - octave: The octave number.
- *          - accidentalApplied: '#', 'b', or null based on key signature.
- *          - noteName: The final note name including accidental and octave (e.g., "F#5").
+ *          - accidentalApplied: '#', 'b', or null based on key signature/override.
+ *          - noteName: The final note name for internal use (e.g., "F#5").
+ *          - displayNoteName: The final note name for display (e.g., "F♯").
  */
 function getNoteFromPosition(snappedY) {
     const halfSpacing = LINE_SPACING / 2;
@@ -287,7 +288,16 @@ function getNoteFromPosition(snappedY) {
         }
     }
 
-    const noteInfo = { baseNote, octave, accidentalApplied, noteName: finalNoteName };
+    // Create display name with proper symbols and no octave
+    let displayAccidentalSymbol = '';
+    if (accidentalApplied === '#') {
+        displayAccidentalSymbol = '♯';
+    } else if (accidentalApplied === 'b') {
+        displayAccidentalSymbol = '♭';
+    }
+    const displayNoteName = baseNote + displayAccidentalSymbol;
+
+    const noteInfo = { baseNote, octave, accidentalApplied, noteName: finalNoteName, displayNoteName };
     return noteInfo;
 }
 
@@ -450,8 +460,9 @@ function handleStaffMouseDown(event, svg) {
     }
 
     // --- Update Note Name Display ---
+    const displayNote = noteInfo ? noteInfo.displayNoteName : null;
     if (noteDisplayElement) {
-        noteDisplayElement.textContent = noteName ? `Note: ${noteName}` : '';
+        noteDisplayElement.textContent = displayNote ? `Note: ${displayNote}` : '';
     }
 
     // --- Update Trumpet Fingering Display ---
@@ -483,9 +494,9 @@ function handleStaffMouseDown(event, svg) {
             });
         }
 
-        // Announce the selected note and its primary fingering after buttons are created
-        if (noteName) { // Ensure we have a note name to announce
-            announce(`${noteName} - Fingering: ${formatFingering(fingeringInfo.primary)}`);
+        // Announce the selected note (using display name) and its primary fingering
+        if (displayNote) { // Use displayNote for announcement
+            announce(`${displayNote} - Fingering: ${formatFingering(fingeringInfo.primary)}`);
         }
 
     } else {
@@ -499,9 +510,9 @@ function handleStaffMouseDown(event, svg) {
         optionsArea.style.fontStyle = 'italic';
         optionsArea.style.color = '#888';
         console.log("[MouseDown] No fingering info found, displaying '???'");
-        announce(`${noteName || 'Selected position'} - No standard fingering`); // Announce note and lack of fingering
+        // Announce note (using display name) and lack of fingering
+        announce(`${displayNote || 'Selected position'} - No standard fingering`);
     }
-    // Removed the invalid 'else if' block here
 
 
     // --- Trigger Audio ---

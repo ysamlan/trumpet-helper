@@ -64,7 +64,9 @@ export function setCurrentKeySignature(keyName) {
         }
 
         updateChangeKeyButtonText(); // Update button text
-        announce(`Key signature set to ${currentKeySignature}`); // Announce change
+        // Format key name for announcement
+        const displayKeyName = currentKeySignature.replace('#', '♯').replace('b', '♭');
+        announce(`Key signature set to ${displayKeyName}`); // Announce change
     } else {
         console.warn(`Attempted to set invalid key signature: ${keyName}`);
     }
@@ -133,8 +135,10 @@ function updateChangeKeyButtonText() {
     if (btn) {
         const fullKeyName = getCurrentKeySignature();
         // Extract the root note part (e.g., "C" from "C Major", "Bb" from "Bb Major")
-        const keyRoot = fullKeyName.split(' ')[0];
-        btn.textContent = `Key: ${keyRoot}`; // Set text like "Key: C"
+        let keyRoot = fullKeyName.split(' ')[0];
+        // Replace ASCII accidentals with proper symbols for display
+        const displayKeyRoot = keyRoot.replace('#', '♯').replace('b', '♭');
+        btn.textContent = `Key: ${displayKeyRoot}`; // Set text like "Key: C", "Key: F♯"
     }
 }
 

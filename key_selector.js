@@ -64,11 +64,14 @@ export function renderRadialMenu(containerId, mode, keySelectCallback, toggleMod
 
         const button = document.createElement('button');
         button.classList.add('key-option-btn');
-        // Simplify display name (e.g., "G Major" -> "G")
-        const displayName = keyName.split(' ')[0];
-        button.textContent = displayName;
-        button.dataset.keyname = keyName;
-        button.setAttribute('aria-label', `Select ${keyName}`); // Add aria-label
+        // Simplify display name (e.g., "G Major" -> "G") and format accidentals
+        const simpleKeyName = keyName.split(' ')[0];
+        const displayKeyName = simpleKeyName.replace('#', '♯').replace('b', '♭');
+        button.textContent = displayKeyName; // Use formatted name for button text
+        button.dataset.keyname = keyName; // Store original name in dataset
+        // Format full key name for aria-label
+        const displayFullKeyName = keyName.replace('#', '♯').replace('b', '♭');
+        button.setAttribute('aria-label', `Select ${displayFullKeyName}`);
         button.style.left = `${x}px`;
         button.style.top = `${y}px`;
 
@@ -79,6 +82,7 @@ export function renderRadialMenu(containerId, mode, keySelectCallback, toggleMod
         // Add hover listeners for info display
         button.addEventListener('mouseover', () => {
             const numAccidentals = keyInfo.notes.length;
+            // Use proper symbols for info display
             const accidentalSymbol = keyInfo.accidental === '#' ? '♯' : (keyInfo.accidental === 'b' ? '♭' : '');
             infoDisplay.textContent = numAccidentals > 0 ? `${numAccidentals} ${accidentalSymbol}` : '0';
         });
@@ -93,11 +97,13 @@ export function renderRadialMenu(containerId, mode, keySelectCallback, toggleMod
     // Add central toggle button
     const toggleButton = document.createElement('button');
     toggleButton.id = 'key-mode-toggle';
-    // Show the symbol for the CURRENT mode, title describes the action (switch to other mode)
-    const toggleActionLabel = mode === 'sharps' ? 'Switch to Flat Keys' : 'Switch to Sharp Keys';
-    toggleButton.textContent = mode === 'sharps' ? '♯' : '♭';
+    // Use proper symbols for toggle button text and labels
+    const currentSymbol = mode === 'sharps' ? '♯' : '♭';
+    const otherSymbol = mode === 'sharps' ? '♭' : '♯';
+    const toggleActionLabel = `Switch to ${otherSymbol} Keys`;
+    toggleButton.textContent = currentSymbol; // Show symbol for current mode
     toggleButton.title = toggleActionLabel; // Keep title for tooltips
-    toggleButton.setAttribute('aria-label', toggleActionLabel); // Add aria-label for screen readers
+    toggleButton.setAttribute('aria-label', toggleActionLabel); // Use formatted label
     toggleButton.style.left = `${CENTER_X - TOGGLE_BUTTON_SIZE / 2}px`;
     toggleButton.style.top = `${CENTER_Y - TOGGLE_BUTTON_SIZE / 2}px`;
 
