@@ -131,7 +131,10 @@ function toggleKeySelectorMode() {
 function updateChangeKeyButtonText() {
     const btn = document.getElementById('change-key-btn');
     if (btn) {
-        btn.textContent = getCurrentKeySignature();
+        const fullKeyName = getCurrentKeySignature();
+        // Extract the root note part (e.g., "C" from "C Major", "Bb" from "Bb Major")
+        const keyRoot = fullKeyName.split(' ')[0];
+        btn.textContent = `Key: ${keyRoot}`; // Set text like "Key: C"
     }
 }
 

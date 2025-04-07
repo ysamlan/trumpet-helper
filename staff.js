@@ -381,6 +381,12 @@ function handleStaffMouseLeave(event, svg) {
     if (ledgerLinesGroup) {
         ledgerLinesGroup.innerHTML = ''; // Clear lines
     }
+
+    // Clear Note Name Display
+    const noteDisplayElement = document.getElementById('note-name-display');
+    if (noteDisplayElement) {
+        noteDisplayElement.textContent = '';
+    }
 }
 
 function handleStaffMouseDown(event, svg) {
@@ -392,6 +398,8 @@ function handleStaffMouseDown(event, svg) {
 
     // --- Display Placed Note ---
     const placedNoteElement = svg.getElementById("placed-note");
+    const noteDisplayElement = document.getElementById('note-name-display'); // Get note display span
+
     if (placedNoteElement) {
         if (noteName) {
             // Calculate horizontal position, constrained like the cursor

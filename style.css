@@ -232,6 +232,17 @@ footer {
     background-color: #d0d0d0;
 }
 
+/* --- Note Name Display Styling --- */
+.note-info-display {
+    margin-left: 1rem; /* Space from the key button */
+    font-size: 0.9rem;
+    color: #333;
+    min-height: 1.2em; /* Prevent layout shifts */
+    display: inline-block; /* Ensure margin is applied */
+    vertical-align: middle; /* Align with buttons */
+}
+
+
 /* --- Key Signature Modal Styling --- */
 .modal {
     position: fixed; /* Stay in place */
